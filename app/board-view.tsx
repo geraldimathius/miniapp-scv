@@ -21,6 +21,57 @@ const COLUMNS_CONFIG = [
   { key: 'Done', title: 'Done', headerColor: 'bg-emerald-100 text-emerald-700' },
 ] as const;
 
+function FormattedDescription({ text }: { text?: string }) {
+  if (!text || !text.trim()) {
+    return <span className="text-slate-400 italic">No description provided.</span>;
+  }
+
+  // Normalize quotes and split by lines
+  const cleanText = text.replace(/^["']|["']$/g, '');
+  const lines = cleanText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+
+  if (lines.length === 0) {
+    return <span className="text-slate-400 italic">No description provided.</span>;
+  }
+
+  return (
+    <div className="space-y-1.5 text-slate-600 text-xs leading-relaxed">
+      {lines.map((line, index) => {
+        // Match bullet point formats: -, *, •
+        const bulletMatch = line.match(/^[-*•]\s*(.*)$/);
+        // Match numbered list formats: 1., 2), etc.
+        const numberMatch = line.match(/^(\d+[.)])\s*(.*)$/);
+
+        if (bulletMatch) {
+          return (
+            <div key={index} className="flex items-start gap-2 pl-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 flex-shrink-0" />
+              <span className="flex-1 text-slate-600">{bulletMatch[1]}</span>
+            </div>
+          );
+        }
+
+        if (numberMatch) {
+          return (
+            <div key={index} className="flex items-start gap-1.5 pl-0.5">
+              <span className="font-semibold text-indigo-600 flex-shrink-0 text-[11px] min-w-[14px]">
+                {numberMatch[1]}
+              </span>
+              <span className="flex-1 text-slate-600">{numberMatch[2]}</span>
+            </div>
+          );
+        }
+
+        return (
+          <div key={index} className="font-semibold text-slate-700 text-xs">
+            {line}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function BoardView({ tasks, errorMsg }: BoardViewProps) {
   const [selectedProject, setSelectedProject] = useState<string>('ALL');
 
@@ -172,9 +223,9 @@ export default function BoardView({ tasks, errorMsg }: BoardViewProps) {
                             )}
                           </div>
 
-                          {/* Ticket label formatted as description below the project */}
-                          <div className="text-slate-600 text-xs leading-relaxed bg-slate-50/70 p-2.5 rounded-lg border border-slate-100">
-                            {item['Label ticket'] || 'No description provided.'}
+                          {/* Formatted description with bullet points & title */}
+                          <div className="bg-slate-50/70 p-3 rounded-lg border border-slate-100">
+                            <FormattedDescription text={item['Label ticket']} />
                           </div>
                         </div>
                       ))
