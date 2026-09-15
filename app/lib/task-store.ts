@@ -1,16 +1,31 @@
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'os';
 import Papa from 'papaparse';
 import { Task } from '../board-view';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+// In serverless environments (Vercel, AWS Lambda), /var/task is read-only.
+// We use os.tmpdir() (/tmp) which is the only writable directory.
+const isServerless = Boolean(
+  process.env.VERCEL ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.LAMBDA_TASK_ROOT ||
+  process.env.NODE_ENV === 'production'
+);
+
+const DATA_DIR = isServerless
+  ? path.join(os.tmpdir(), 'miniapp-scv-data')
+  : path.join(process.cwd(), 'data');
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json');
+
+// In-memory fallback cache in case filesystem is completely restricted
+let inMemoryTasks: Task[] = [];
 
 export async function ensureDataDir() {
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
   } catch (err) {
-    // Directory already exists
+    // Ignore error if already exists or permission issue
   }
 }
 
@@ -189,22 +204,28 @@ export async function fetchFromGoogleSheet(): Promise<Task[]> {
 }
 
 export async function readLocalTasks(): Promise<Task[]> {
-  await ensureDataDir();
   try {
+    await ensureDataDir();
     const fileContent = await fs.readFile(TASKS_FILE, 'utf-8');
     const tasks = JSON.parse(fileContent);
-    if (Array.isArray(tasks)) {
+    if (Array.isArray(tasks) && tasks.length > 0) {
+      inMemoryTasks = tasks;
       return tasks;
     }
   } catch (err) {
-    // File not found or invalid
+    // File not found, invalid, or read error
   }
-  return [];
+  return inMemoryTasks;
 }
 
 export async function saveTasks(tasks: Task[]): Promise<void> {
-  await ensureDataDir();
-  await fs.writeFile(TASKS_FILE, JSON.stringify(tasks, null, 2), 'utf-8');
+  inMemoryTasks = tasks;
+  try {
+    await ensureDataDir();
+    await fs.writeFile(TASKS_FILE, JSON.stringify(tasks, null, 2), 'utf-8');
+  } catch (err) {
+    // Silently continue if filesystem is read-only (e.g. serverless without write access)
+  }
 }
 
 /**
