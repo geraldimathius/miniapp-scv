@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import { User } from './lib/users';
+import AppNav from './components/app-nav';
 
 export type Task = {
   id?: string;
@@ -33,8 +35,11 @@ export type ParsedTask = Task & {
   _attachments: string[];
 };
 
-interface BoardViewProps {
+export interface BoardViewProps {
   tasks: Task[];
+  currentUser?: User;
+  usersList?: User[];
+  pendingUsersCount?: number;
   errorMsg?: string;
 }
 
@@ -553,6 +558,7 @@ function TaskFormModal({
   mode,
   initialData,
   existingProjects,
+  usersList = [],
   onClose,
   onSubmit,
   isSaving,
@@ -561,6 +567,7 @@ function TaskFormModal({
   mode: 'create' | 'edit';
   initialData?: Task | null;
   existingProjects: string[];
+  usersList?: User[];
   onClose: () => void;
   onSubmit: (formData: Partial<Task>) => Promise<void>;
   isSaving: boolean;
@@ -793,11 +800,19 @@ function TaskFormModal({
               </label>
               <input
                 type="text"
+                list="users-assignee-datalist"
                 value={pic}
                 onChange={e => setPic(e.target.value)}
-                placeholder="Nama penanggung jawab"
+                placeholder="Pilih user terdaftar atau ketik nama"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
               />
+              <datalist id="users-assignee-datalist">
+                {usersList.map(u => (
+                  <option key={u.id} value={u.name}>
+                    {u.email} ({u.role === 'master' ? 'Master' : 'Member'})
+                  </option>
+                ))}
+              </datalist>
             </div>
           </div>
 
@@ -982,7 +997,13 @@ function DeleteConfirmModal({
   );
 }
 
-export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewProps) {
+export default function BoardView({
+  tasks: initialTasks,
+  currentUser,
+  usersList = [],
+  pendingUsersCount = 0,
+  errorMsg,
+}: BoardViewProps) {
   const [taskList, setTaskList] = useState<Task[]>(initialTasks);
   const [selectedProject, setSelectedProject] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -992,6 +1013,14 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
   const [sortOption, setSortOption] = useState<SortOption>('NEWEST');
   const [viewMode, setViewMode] = useState<ViewMode>('KANBAN');
 
+  // Assignee Filter States (Default to assigned to logged-in user if authenticated)
+  const [filterOnlyMyTasks, setFilterOnlyMyTasks] = useState<boolean>(!!currentUser);
+  const [selectedAssignee, setSelectedAssignee] = useState<string>('ALL');
+
+  // Drag and Drop States
+  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+  const [dragOverColKey, setDragOverColKey] = useState<string | null>(null);
+
   // Modals state
   const [activeDetailTask, setActiveDetailTask] = useState<ParsedTask | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
@@ -999,7 +1028,6 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
   const [previewLightboxUrl, setPreviewLightboxUrl] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Sync state if initialTasks changes
@@ -1012,6 +1040,33 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
     setTimeout(() => {
       setToastMessage(null);
     }, 4000);
+  };
+
+  // Drag and drop column drop handler
+  const handleDropTaskToColumn = async (taskId: string, targetColKey: string) => {
+    let newStatus = 'Ongoing';
+    if (targetColKey === 'OnProgress') newStatus = 'On Progress';
+    else if (targetColKey === 'Blocker') newStatus = 'Blocker';
+    else if (targetColKey === 'Done') newStatus = 'Done';
+    else newStatus = 'Ongoing';
+
+    const existing = taskList.find(t => t.id === taskId);
+    if (!existing) return;
+    if (existing.Status === newStatus) return;
+
+    // Optimistic UI update
+    setTaskList(prev => prev.map(t => (t.id === taskId ? { ...t, Status: newStatus } : t)));
+    showToast(`Status tiket berhasil diubah ke "${newStatus}"`);
+
+    try {
+      await fetch('/api/tasks', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: taskId, Status: newStatus }),
+      });
+    } catch (err: any) {
+      console.error('Failed to sync drag and drop status:', err);
+    }
   };
 
   // Normalize tasks with parsed date, index, and attachments
@@ -1043,7 +1098,7 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
     return { counts, uniqueProjects };
   }, [normalizedTasks]);
 
-  // Filter tasks based on Project, Search Query, and Date Range
+  // Filter tasks based on Project, Search Query, Assignee, and Date Range
   const filteredTasks = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -1054,12 +1109,25 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
     return normalizedTasks.filter(task => {
-      // 1. Project Filter
+      // 1. Assignee / PIC Filter (Auto-view my tasks)
+      if (filterOnlyMyTasks && currentUser) {
+        const myName = currentUser.name.toLowerCase().trim();
+        const myEmail = currentUser.email.toLowerCase().trim();
+        const pic = (task.PIC || task.Assignee || '').toLowerCase().trim();
+        const isMine = pic === myName || pic === myEmail || pic.includes(myName) || (myEmail && pic.includes(myEmail));
+        if (!isMine) return false;
+      } else if (selectedAssignee !== 'ALL') {
+        const cleanSel = selectedAssignee.toLowerCase().trim();
+        const pic = (task.PIC || task.Assignee || '').toLowerCase().trim();
+        if (!pic.includes(cleanSel)) return false;
+      }
+
+      // 2. Project Filter
       if (selectedProject !== 'ALL' && task.Project?.trim() !== selectedProject) {
         return false;
       }
 
-      // 2. Keyword Search
+      // 3. Keyword Search
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const projectMatch = task.Project?.toLowerCase().includes(q);
@@ -1071,7 +1139,7 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
         }
       }
 
-      // 3. Date Filter
+      // 4. Date Filter
       if (dateFilter === 'ALL') {
         return true;
       }
@@ -1111,7 +1179,17 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
 
       return true;
     });
-  }, [normalizedTasks, selectedProject, searchQuery, dateFilter, customStartDate, customEndDate]);
+  }, [
+    normalizedTasks,
+    selectedProject,
+    searchQuery,
+    dateFilter,
+    customStartDate,
+    customEndDate,
+    filterOnlyMyTasks,
+    selectedAssignee,
+    currentUser,
+  ]);
 
   // Sort tasks (Default: NEWEST FIRST)
   const sortedTasks = useMemo(() => {
@@ -1281,30 +1359,14 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
     }
   };
 
-  const handleSyncGoogleSheet = async () => {
-    setIsSyncing(true);
-    try {
-      const res = await fetch('/api/tasks/sync', { method: 'POST' });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.data)) {
-        setTaskList(data.data);
-        showToast(data.message || 'Sinkronisasi berhasil!');
-      } else {
-        showToast(`Gagal sinkronisasi: ${data.error}`);
-      }
-    } catch (err: any) {
-      showToast(`Error sinkronisasi: ${err.message}`);
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
   const hasActiveFilters =
     selectedProject !== 'ALL' ||
     searchQuery.trim() !== '' ||
     dateFilter !== 'ALL' ||
     customStartDate !== '' ||
-    customEndDate !== '';
+    customEndDate !== '' ||
+    filterOnlyMyTasks ||
+    selectedAssignee !== 'ALL';
 
   const resetFilters = () => {
     setSelectedProject('ALL');
@@ -1312,11 +1374,15 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
     setDateFilter('ALL');
     setCustomStartDate('');
     setCustomEndDate('');
+    setFilterOnlyMyTasks(false);
+    setSelectedAssignee('ALL');
   };
 
   return (
-    <div className="bg-slate-50 font-sans text-slate-800 min-h-screen p-4 sm:p-6 md:p-10">
-      <div className="max-w-[1500px] mx-auto space-y-6">
+    <div className="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+      <AppNav user={currentUser} pendingUsersCount={pendingUsersCount} />
+
+      <div className="max-w-[1500px] w-full mx-auto p-4 sm:p-6 md:p-10 space-y-6 flex-1">
         {/* Toast Notification */}
         {toastMessage && (
           <div className="fixed top-5 right-5 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-3 duration-200">
@@ -1334,15 +1400,15 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
               </h1>
               <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                B2 Storage & CRUD
+                Turso DB & Cloudinary
               </span>
             </div>
             <p className="text-slate-500 text-xs sm:text-sm mt-1">
-              Kelola tiket, upload lampiran gambar (Cloudinary), update status & pantau waktu pengerjaan.
+              Drag & drop tiket untuk ubah status, kelola tiket tim, upload lampiran foto & pantau waktu.
             </p>
           </div>
 
-          {/* Action Bar (Add Task, Sync, View Toggles) */}
+          {/* Action Bar (Add Task, View Toggles) */}
           <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
             {/* Add Task Button */}
             <button
@@ -1355,20 +1421,6 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
                 <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
               <span>Tambah Tiket</span>
-            </button>
-
-            {/* Sync from Google Sheet Button */}
-            <button
-              type="button"
-              onClick={handleSyncGoogleSheet}
-              disabled={isSyncing}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 transition-colors disabled:opacity-50"
-              title="Tarik / sinkronkan ulang data dari Google Sheet"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isSyncing ? 'animate-spin' : ''}>
-                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-              </svg>
-              <span>{isSyncing ? 'Sinkron...' : 'Sync Sheet'}</span>
             </button>
 
             {/* View Mode Buttons */}
@@ -1413,6 +1465,73 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
 
         {/* Filter & Control Bar */}
         <section className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+          {/* Row 1: Assignee quick toggle & Search & Filters */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            {/* Quick Assignee Toggle */}
+            <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
+              {currentUser && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFilterOnlyMyTasks(true);
+                    setSelectedAssignee('ALL');
+                  }}
+                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                    filterOnlyMyTasks
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  👤 Tiket Saya
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setFilterOnlyMyTasks(false)}
+                className={`px-3 py-1.5 rounded-lg transition-all ${
+                  !filterOnlyMyTasks && selectedAssignee === 'ALL'
+                    ? 'bg-white text-slate-900 shadow-xs font-black'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                🌐 Semua Tiket ({taskList.length})
+              </button>
+            </div>
+
+            {/* Assignee PIC Dropdown Filter */}
+            {usersList.length > 0 && (
+              <div className="relative">
+                <select
+                  value={filterOnlyMyTasks ? 'MY_TASKS' : selectedAssignee}
+                  onChange={e => {
+                    const val = e.target.value;
+                    if (val === 'MY_TASKS') {
+                      setFilterOnlyMyTasks(true);
+                      setSelectedAssignee('ALL');
+                    } else {
+                      setFilterOnlyMyTasks(false);
+                      setSelectedAssignee(val);
+                    }
+                  }}
+                  className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3.5 py-2 pr-8 focus:ring-2 focus:ring-indigo-500 focus:bg-white cursor-pointer"
+                >
+                  <option value="ALL">Filter PIC: Semua Tim</option>
+                  {currentUser && <option value="MY_TASKS">👤 Tiket Saya ({currentUser.name})</option>}
+                  {usersList.map(u => (
+                    <option key={u.id} value={u.name}>
+                      PIC: {u.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Search Input */}
             <div className="relative">
@@ -1428,7 +1547,7 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Cari project, tiket, detail..."
+                placeholder="Cari project, tiket, PIC, detail..."
                 className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs font-medium rounded-xl pl-9 pr-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
               />
             </div>
@@ -1562,7 +1681,33 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
               const items = columns[key] || [];
 
               return (
-                <div key={key} className="bg-slate-100/70 rounded-2xl p-4 border border-slate-200 flex flex-col h-full">
+                <div
+                  key={key}
+                  onDragOver={e => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    if (dragOverColKey !== key) setDragOverColKey(key);
+                  }}
+                  onDragLeave={e => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                      setDragOverColKey(null);
+                    }
+                  }}
+                  onDrop={e => {
+                    e.preventDefault();
+                    const taskId = e.dataTransfer.getData('text/plain') || draggedTaskId;
+                    if (taskId) {
+                      handleDropTaskToColumn(taskId, key);
+                    }
+                    setDragOverColKey(null);
+                    setDraggedTaskId(null);
+                  }}
+                  className={`rounded-2xl p-4 border flex flex-col h-full transition-all duration-200 ${
+                    dragOverColKey === key
+                      ? 'bg-indigo-50/90 ring-2 ring-indigo-400 ring-dashed shadow-md'
+                      : 'bg-slate-100/70 border-slate-200'
+                  }`}
+                >
                   {/* Column Header */}
                   <div className="flex items-center justify-between mb-4 px-1">
                     <h2 className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg border ${headerColor}`}>
@@ -1584,8 +1729,19 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
                         return (
                           <div
                             key={item.id ? `${item.id}-${idx}` : `item-${idx}`}
+                            draggable={true}
+                            onDragStart={e => {
+                              e.dataTransfer.setData('text/plain', item.id || '');
+                              setDraggedTaskId(item.id || null);
+                            }}
+                            onDragEnd={() => {
+                              setDraggedTaskId(null);
+                              setDragOverColKey(null);
+                            }}
                             onClick={() => setActiveDetailTask(item)}
-                            className="bg-white p-4 rounded-xl shadow-xs border border-slate-200/80 hover:shadow-md hover:border-indigo-300 transition-all duration-200 group flex flex-col gap-3 cursor-pointer relative"
+                            className={`bg-white p-4 rounded-xl shadow-xs border border-slate-200/80 hover:shadow-md hover:border-indigo-300 transition-all duration-200 group flex flex-col gap-3 cursor-grab active:cursor-grabbing relative select-none ${
+                              draggedTaskId === item.id ? 'opacity-40 ring-2 ring-indigo-500 ring-dashed scale-95' : ''
+                            }`}
                           >
                             {/* Project Name & Actions */}
                             <div className="flex justify-between items-start gap-2">
@@ -1802,6 +1958,7 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
           isOpen={isCreateOpen}
           mode="create"
           existingProjects={projectStats.uniqueProjects}
+          usersList={usersList}
           onClose={() => setIsCreateOpen(false)}
           onSubmit={handleCreateTask}
           isSaving={isSaving}
@@ -1813,6 +1970,7 @@ export default function BoardView({ tasks: initialTasks, errorMsg }: BoardViewPr
           mode="edit"
           initialData={editingTask}
           existingProjects={projectStats.uniqueProjects}
+          usersList={usersList}
           onClose={() => setEditingTask(null)}
           onSubmit={handleUpdateTask}
           isSaving={isSaving}

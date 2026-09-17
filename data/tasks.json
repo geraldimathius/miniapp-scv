@@ -185,7 +185,7 @@
     "Label ticket": "Marketing otomasi (Webengage)",
     "Link Ticket": "https://teamwork.icubeonline.com/app/tasks/30126340",
     "Status": "Ongoing",
-    "Tanggal": "",
+    "Tanggal": "2026-09-15",
     "Waktu Pengerjaan": "",
     "Detail Pengerjaan": "",
     "PIC": "",
@@ -204,11 +204,9 @@
     "Waktu Pengerjaan": "",
     "Detail Pengerjaan": "",
     "PIC": "",
-    "attachments": [
-      "https://res.cloudinary.com/x3snqiks/image/upload/v1789451036/miniapp-scv/attachments/1789451033532_9_9.png"
-    ],
+    "attachments": [],
     "createdAt": "2026-09-15T05:44:15.138Z",
-    "updatedAt": "2026-09-15T05:44:15.138Z",
+    "updatedAt": "2026-09-15T06:36:55.832Z",
     "_source": "google-sheet"
   },
   {
@@ -221,7 +219,9 @@
     "Waktu Pengerjaan": "",
     "Detail Pengerjaan": "",
     "PIC": "",
-    "attachments": [],
+    "attachments": [
+      "https://res.cloudinary.com/x3snqiks/image/upload/v1789453651/miniapp-scv/attachments/1789453651601_9_9.png"
+    ],
     "createdAt": "2026-09-15T05:44:15.138Z",
     "updatedAt": "2026-09-15T05:44:15.138Z",
     "_source": "google-sheet"
