@@ -3,6 +3,8 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { User } from './lib/users';
 import AppNav from './components/app-nav';
+import { useTranslation } from './lib/i18n/LanguageProvider';
+import { FiUser, FiGlobe } from 'react-icons/fi';
 
 export type Task = {
   id?: string;
@@ -48,7 +50,7 @@ type SortOption = 'NEWEST' | 'OLDEST' | 'PROJECT_ASC';
 type ViewMode = 'KANBAN' | 'TIMELINE';
 
 const COLUMNS_CONFIG = [
-  { key: 'Ongoing', title: 'To Do / Ongoing', headerColor: 'bg-slate-100 text-slate-700 border-slate-200', badgeColor: 'bg-slate-100 text-slate-700 border-slate-300' },
+  { key: 'Ongoing', title: 'To Do / Ongoing', headerColor: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700', badgeColor: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300' },
   { key: 'OnProgress', title: 'In Progress', headerColor: 'bg-indigo-50 text-indigo-700 border-indigo-200', badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
   { key: 'Blocker', title: 'Blocker', headerColor: 'bg-rose-50 text-rose-700 border-rose-200', badgeColor: 'bg-rose-50 text-rose-700 border-rose-200' },
   { key: 'Done', title: 'Done', headerColor: 'bg-emerald-50 text-emerald-700 border-emerald-200', badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
@@ -156,18 +158,18 @@ function formatDisplayDate(d: Date | null, fallback: string = ''): string {
 // Formatted rich description component
 function FormattedDescription({ text }: { text?: string }) {
   if (!text || !text.trim()) {
-    return <span className="text-slate-400 italic text-xs">Tidak ada detail pengerjaan tambahan.</span>;
+    return <span className="text-slate-400 dark:text-slate-500 italic text-xs">Tidak ada detail pengerjaan tambahan.</span>;
   }
 
   const cleanText = text.replace(/^["']|["']$/g, '');
   const lines = cleanText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
 
   if (lines.length === 0) {
-    return <span className="text-slate-400 italic text-xs">Tidak ada detail pengerjaan tambahan.</span>;
+    return <span className="text-slate-400 dark:text-slate-500 italic text-xs">Tidak ada detail pengerjaan tambahan.</span>;
   }
 
   return (
-    <div className="space-y-1.5 text-slate-700 text-xs leading-relaxed">
+    <div className="space-y-1.5 text-slate-700 dark:text-slate-300 text-xs leading-relaxed">
       {lines.map((line, index) => {
         const bulletMatch = line.match(/^[-*•]\s*(.*)$/);
         const numberMatch = line.match(/^(\d+[.)])\s*(.*)$/);
@@ -176,7 +178,7 @@ function FormattedDescription({ text }: { text?: string }) {
           return (
             <div key={index} className="flex items-start gap-2 pl-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-1.5 flex-shrink-0" />
-              <span className="flex-1 text-slate-700">{bulletMatch[1]}</span>
+              <span className="flex-1 text-slate-700 dark:text-slate-300">{bulletMatch[1]}</span>
             </div>
           );
         }
@@ -187,13 +189,13 @@ function FormattedDescription({ text }: { text?: string }) {
               <span className="font-semibold text-indigo-700 flex-shrink-0 text-[11px] min-w-[16px]">
                 {numberMatch[1]}
               </span>
-              <span className="flex-1 text-slate-700">{numberMatch[2]}</span>
+              <span className="flex-1 text-slate-700 dark:text-slate-300">{numberMatch[2]}</span>
             </div>
           );
         }
 
         return (
-          <div key={index} className="text-slate-700 font-medium">
+          <div key={index} className="text-slate-700 dark:text-slate-300 font-medium">
             {line}
           </div>
         );
@@ -312,7 +314,7 @@ function TaskDetailModal({
 
   const content = extractTaskContent(task);
   const statusRaw = task.Status ? task.Status.trim().toLowerCase() : 'ongoing';
-  let statusBadgeColor = 'bg-slate-100 text-slate-700 border-slate-300';
+  let statusBadgeColor = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300';
   const statusLabel = task.Status || 'Ongoing';
 
   if (statusRaw.includes('done')) {
@@ -335,11 +337,11 @@ function TaskDetailModal({
       onClick={onClose}
     >
       <div
-        className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150"
+        className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4 bg-slate-50/70">
+        <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between gap-4 bg-slate-50/70">
           <div className="space-y-1.5 flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
@@ -349,7 +351,7 @@ function TaskDetailModal({
                 {statusLabel}
               </span>
             </div>
-            <h2 id="modal-task-title" className="text-lg font-bold text-slate-900 leading-snug break-words">
+            <h2 id="modal-task-title" className="text-lg font-bold text-slate-900 dark:text-white leading-snug break-words">
               {content.title}
             </h2>
           </div>
@@ -358,7 +360,7 @@ function TaskDetailModal({
             <button
               type="button"
               onClick={() => onEdit(task)}
-              className="text-slate-600 hover:text-indigo-600 hover:bg-slate-200/60 px-3 py-1.5 rounded-xl transition-colors text-xs font-semibold flex items-center gap-1 border border-slate-200"
+              className="text-slate-600 dark:text-slate-400 dark:text-slate-500 hover:text-indigo-600 hover:bg-slate-200 dark:bg-slate-700/60 px-3 py-1.5 rounded-xl transition-colors text-xs font-semibold flex items-center gap-1 border border-slate-200 dark:border-slate-700"
               title="Edit Tiket"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -369,7 +371,7 @@ function TaskDetailModal({
             <button
               type="button"
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 p-2 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:bg-slate-700/60 p-2 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
               aria-label="Tutup modal"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -383,8 +385,8 @@ function TaskDetailModal({
         {/* Modal Content Body */}
         <div className="p-6 overflow-y-auto space-y-6">
           {/* Quick Status Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
-            <span className="font-semibold text-slate-600">Pindahkan Status:</span>
+          <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+            <span className="font-semibold text-slate-600 dark:text-slate-400 dark:text-slate-500">Pindahkan Status:</span>
             <div className="flex flex-wrap items-center gap-1.5">
               {[
                 { key: 'Ongoing', label: 'To Do / Ongoing', activeClass: 'bg-slate-700 text-white' },
@@ -401,7 +403,7 @@ function TaskDetailModal({
                     className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                       isActive
                         ? st.activeClass + ' shadow-xs'
-                        : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800'
                     }`}
                   >
                     {st.label}
@@ -412,7 +414,7 @@ function TaskDetailModal({
           </div>
 
           {/* Metadata Grid (Waktu & PIC) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700/80 text-xs">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -423,8 +425,8 @@ function TaskDetailModal({
                 </svg>
               </div>
               <div>
-                <div className="text-slate-500 font-medium">Tanggal Pengerjaan</div>
-                <div className="font-semibold text-slate-800">
+                <div className="text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">Tanggal Pengerjaan</div>
+                <div className="font-semibold text-slate-800 dark:text-slate-200">
                   {formattedDate || 'Belum dicantumkan'}
                 </div>
               </div>
@@ -438,15 +440,15 @@ function TaskDetailModal({
                 </svg>
               </div>
               <div>
-                <div className="text-slate-500 font-medium">Waktu / Durasi</div>
-                <div className="font-semibold text-slate-800">
+                <div className="text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">Waktu / Durasi</div>
+                <div className="font-semibold text-slate-800 dark:text-slate-200">
                   {content.timeSpent || 'Sesuai timeline tiket'}
                 </div>
               </div>
             </div>
 
             {content.assignee && (
-              <div className="flex items-center gap-2.5 sm:col-span-2 pt-1 border-t border-slate-200/60">
+              <div className="flex items-center gap-2.5 sm:col-span-2 pt-1 border-t border-slate-200 dark:border-slate-700/60">
                 <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center flex-shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -454,8 +456,8 @@ function TaskDetailModal({
                   </svg>
                 </div>
                 <div>
-                  <div className="text-slate-500 font-medium">PIC / Assignee</div>
-                  <div className="font-semibold text-slate-800">{content.assignee}</div>
+                  <div className="text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">PIC / Assignee</div>
+                  <div className="font-semibold text-slate-800 dark:text-slate-200">{content.assignee}</div>
                 </div>
               </div>
             )}
@@ -465,13 +467,13 @@ function TaskDetailModal({
           {attachments.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
                   </svg>
                   <span>Lampiran Gambar ({attachments.length})</span>
                 </h3>
-                <span className="text-[11px] text-slate-400">Klik gambar untuk memperbesar</span>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500">Klik gambar untuk memperbesar</span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -479,7 +481,7 @@ function TaskDetailModal({
                   <div
                     key={imgIdx}
                     onClick={() => onOpenImage(url)}
-                    className="group relative aspect-video bg-slate-100 rounded-xl overflow-hidden border border-slate-200 hover:border-indigo-400 cursor-pointer transition-all shadow-xs"
+                    className="group relative aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-indigo-400 cursor-pointer transition-all shadow-xs"
                   >
                     <img
                       src={url}
@@ -502,17 +504,17 @@ function TaskDetailModal({
 
           {/* Detail Pengerjaan Section */}
           <div className="space-y-2">
-            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               Rincian & Detail Pengerjaan
             </h3>
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/90 max-h-60 overflow-y-auto">
+            <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-700/90 max-h-60 overflow-y-auto">
               <FormattedDescription text={content.detailText || task['Label ticket']} />
             </div>
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+        <div className="px-6 py-4 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             {task['Link Ticket'] ? (
               <a
@@ -542,7 +544,7 @@ function TaskDetailModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold rounded-xl transition-colors"
+            className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 text-xs font-semibold rounded-xl transition-colors"
           >
             Tutup
           </button>
@@ -562,6 +564,8 @@ function TaskFormModal({
   onClose,
   onSubmit,
   isSaving,
+  workspaceMode,
+  currentUser,
 }: {
   isOpen: boolean;
   mode: 'create' | 'edit';
@@ -571,6 +575,8 @@ function TaskFormModal({
   onClose: () => void;
   onSubmit: (formData: Partial<Task>) => Promise<void>;
   isSaving: boolean;
+  workspaceMode: 'INDIVIDUAL' | 'GROUP';
+  currentUser?: User;
 }) {
   const [project, setProject] = useState('');
   const [labelTicket, setLabelTicket] = useState('');
@@ -583,6 +589,7 @@ function TaskFormModal({
   const [attachments, setAttachments] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -596,7 +603,7 @@ function TaskFormModal({
       setTanggal(initialData.Tanggal || initialData.Date || '');
       setWaktuPengerjaan(content.timeSpent || initialData['Waktu Pengerjaan'] || '');
       setDetailPengerjaan(content.detailText || initialData['Detail Pengerjaan'] || '');
-      setPic(content.assignee || initialData.PIC || '');
+      setPic(workspaceMode === 'INDIVIDUAL' && currentUser ? currentUser.name : (content.assignee || initialData.PIC || ''));
       setAttachments(extractAttachments(initialData.attachments));
       setUploadError(null);
     } else if (mode === 'create') {
@@ -608,11 +615,11 @@ function TaskFormModal({
       setTanggal(todayIso);
       setWaktuPengerjaan('');
       setDetailPengerjaan('');
-      setPic('');
+      setPic(workspaceMode === 'INDIVIDUAL' && currentUser ? currentUser.name : '');
       setAttachments([]);
       setUploadError(null);
     }
-  }, [initialData, mode, isOpen, existingProjects]);
+  }, [initialData, mode, isOpen, existingProjects, workspaceMode, currentUser]);
 
   if (!isOpen) return null;
 
@@ -676,17 +683,17 @@ function TaskFormModal({
       onClick={onClose}
     >
       <div
-        className="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] animate-in fade-in zoom-in-95 duration-150"
+        className="bg-white dark:bg-slate-900 w-full max-w-xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col max-h-[92vh] animate-in fade-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
       >
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-          <h2 className="text-base font-bold text-slate-900">
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70">
+          <h2 className="text-base font-bold text-slate-900 dark:text-white">
             {mode === 'create' ? 'Tambah Tiket / Tugas Baru' : 'Edit Informasi Tiket'}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg"
+            className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:text-slate-300 p-1.5 rounded-lg"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -699,7 +706,7 @@ function TaskFormModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Project */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Project <span className="text-rose-500">*</span>
               </label>
               <input
@@ -709,24 +716,44 @@ function TaskFormModal({
                 value={project}
                 onChange={e => setProject(e.target.value)}
                 placeholder="Pilih atau ketik nama project"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900"
               />
               <datalist id="project-suggestions">
                 {existingProjects.map(p => (
                   <option key={p} value={p} />
                 ))}
               </datalist>
+
+              {existingProjects.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1 mt-1.5 max-h-16 overflow-y-auto">
+                  <span className="text-[10px] text-slate-400 font-medium">Pilih:</span>
+                  {existingProjects.map(p => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setProject(p)}
+                      className={`px-2 py-0.5 text-[10px] rounded-md font-medium transition-colors cursor-pointer ${
+                        project === p
+                          ? 'bg-indigo-600 text-white font-bold shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950 dark:hover:text-indigo-300'
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Status */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Status <span className="text-rose-500">*</span>
               </label>
               <select
                 value={status}
                 onChange={e => setStatus(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900"
               >
                 <option value="Ongoing">To Do / Ongoing</option>
                 <option value="On Progress">In Progress</option>
@@ -738,7 +765,7 @@ function TaskFormModal({
 
           {/* Ticket Title */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
               Judul Tiket / Tugas <span className="text-rose-500">*</span>
             </label>
             <input
@@ -747,13 +774,13 @@ function TaskFormModal({
               value={labelTicket}
               onChange={e => setLabelTicket(e.target.value)}
               placeholder="Contoh: POS - Issue duplicate customer phone number"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900"
             />
           </div>
 
           {/* Link Ticket */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
               Link Tiket (Teamwork / Jira URL)
             </label>
             <input
@@ -761,27 +788,27 @@ function TaskFormModal({
               value={linkTicket}
               onChange={e => setLinkTicket(e.target.value)}
               placeholder="https://teamwork.icubeonline.com/app/tasks/..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Tanggal Pengerjaan */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Tanggal Pengerjaan
               </label>
               <input
                 type="date"
                 value={tanggal}
                 onChange={e => setTanggal(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900"
               />
             </div>
 
             {/* Waktu / Durasi */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Waktu / Durasi
               </label>
               <input
@@ -789,43 +816,45 @@ function TaskFormModal({
                 value={waktuPengerjaan}
                 onChange={e => setWaktuPengerjaan(e.target.value)}
                 placeholder="Contoh: 3 jam / 09:00 - 12:00"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900"
               />
             </div>
 
             {/* PIC */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                PIC / Assignee
-              </label>
-              <input
-                type="text"
-                list="users-assignee-datalist"
-                value={pic}
-                onChange={e => setPic(e.target.value)}
-                placeholder="Pilih user terdaftar atau ketik nama"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
-              />
-              <datalist id="users-assignee-datalist">
-                {usersList.map(u => (
-                  <option key={u.id} value={u.name}>
-                    {u.email} ({u.role === 'master' ? 'Master' : 'Member'})
-                  </option>
-                ))}
-              </datalist>
-            </div>
+            {workspaceMode === 'GROUP' && (
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  PIC / Assignee
+                </label>
+                <input
+                  type="text"
+                  list="users-assignee-datalist"
+                  value={pic}
+                  onChange={e => setPic(e.target.value)}
+                  placeholder="Pilih user terdaftar atau ketik nama"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900"
+                />
+                <datalist id="users-assignee-datalist">
+                  {usersList.map(u => (
+                    <option key={u.id} value={u.name}>
+                      {u.email} ({u.role === 'master' ? 'Master' : 'Member'})
+                    </option>
+                  ))}
+                </datalist>
+              </div>
+            )}
           </div>
 
           {/* Upload Attachments Section */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-slate-700">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
               Lampiran Gambar (Multiple Images)
             </label>
 
             {/* Dropzone Container */}
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-slate-200 hover:border-indigo-400 bg-slate-50/70 hover:bg-indigo-50/30 rounded-xl p-4 text-center cursor-pointer transition-colors"
+              className="border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 bg-slate-50/70 hover:bg-indigo-50/30 rounded-xl p-4 text-center cursor-pointer transition-colors"
             >
               <input
                 ref={fileInputRef}
@@ -843,7 +872,7 @@ function TaskFormModal({
                     <line x1="12" y1="3" x2="12" y2="15"/>
                   </svg>
                 </div>
-                <div className="text-xs font-semibold text-slate-700">
+                <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   {isUploading ? (
                     <span className="text-indigo-600 flex items-center gap-2">
                       <span className="w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></span>
@@ -853,7 +882,7 @@ function TaskFormModal({
                     <span>Klik untuk pilih beberapa gambar atau tarik ke sini</span>
                   )}
                 </div>
-                <p className="text-[11px] text-slate-400">Format JPG, PNG, WEBP, GIF (Maks. 15MB per file)</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500">Format JPG, PNG, WEBP, GIF (Maks. 15MB per file)</p>
               </div>
             </div>
 
@@ -867,7 +896,7 @@ function TaskFormModal({
             {attachments.length > 0 && (
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-2">
                 {attachments.map((url, idx) => (
-                  <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
+                  <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
                     <img src={url} alt={`Lampiran ${idx + 1}`} className="w-full h-full object-cover" />
                     <button
                       type="button"
@@ -888,7 +917,7 @@ function TaskFormModal({
 
           {/* Detail Pengerjaan */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
               Rincian & Detail Pengerjaan (Catatan teknis / bullet points)
             </label>
             <textarea
@@ -896,16 +925,16 @@ function TaskFormModal({
               value={detailPengerjaan}
               onChange={e => setDetailPengerjaan(e.target.value)}
               placeholder="- Langkah perbaikan&#10;- Catatan bug & solusi&#10;- Endpoint yang disentuh"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900"
             />
           </div>
 
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
               disabled={isSaving || isUploading}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold rounded-xl transition-colors"
+              className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 text-xs font-semibold rounded-xl transition-colors"
             >
               Batal
             </button>
@@ -954,7 +983,7 @@ function DeleteConfirmModal({
       onClick={onClose}
     >
       <div
-        className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150"
+        className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
       >
         <div className="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
@@ -968,9 +997,9 @@ function DeleteConfirmModal({
         </div>
 
         <div>
-          <h3 className="text-base font-bold text-slate-900">Hapus Tiket?</h3>
-          <p className="text-xs text-slate-500 mt-1">
-            Apakah Anda yakin ingin menghapus tiket <span className="font-semibold text-slate-800">"{task['Label ticket'] || task.Project}"</span>? Tindakan ini tidak dapat dibatalkan.
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">Hapus Tiket?</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-1">
+            Apakah Anda yakin ingin menghapus tiket <span className="font-semibold text-slate-800 dark:text-slate-200">"{task['Label ticket'] || task.Project}"</span>? Tindakan ini tidak dapat dibatalkan.
           </p>
         </div>
 
@@ -979,7 +1008,7 @@ function DeleteConfirmModal({
             type="button"
             onClick={onClose}
             disabled={isDeleting}
-            className="px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-semibold rounded-xl transition-colors"
+            className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-800 text-xs font-semibold rounded-xl transition-colors"
           >
             Batal
           </button>
@@ -1008,10 +1037,27 @@ export default function BoardView({
   const [selectedProject, setSelectedProject] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [dateFilter, setDateFilter] = useState<DateFilterPreset>('ALL');
-  const [customStartDate, setCustomStartDate] = useState<string>('');
-  const [customEndDate, setCustomEndDate] = useState<string>('');
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
   const [sortOption, setSortOption] = useState<SortOption>('NEWEST');
+  const { t } = useTranslation();
+
+  // Mode toggles;
   const [viewMode, setViewMode] = useState<ViewMode>('KANBAN');
+  const [workspaceMode, setWorkspaceMode] = useState<'INDIVIDUAL' | 'GROUP'>('INDIVIDUAL');
+
+  // Load workspaceMode from localStorage if available
+  useEffect(() => {
+    const savedMode = localStorage.getItem('scv_workspace_mode');
+    if (savedMode === 'INDIVIDUAL' || savedMode === 'GROUP') {
+      setWorkspaceMode(savedMode);
+    }
+  }, []);
+
+  const handleWorkspaceModeChange = (mode: 'INDIVIDUAL' | 'GROUP') => {
+    setWorkspaceMode(mode);
+    localStorage.setItem('scv_workspace_mode', mode);
+  };
 
   // Assignee Filter States (Default to assigned to logged-in user if authenticated)
   const [filterOnlyMyTasks, setFilterOnlyMyTasks] = useState<boolean>(!!currentUser);
@@ -1109,8 +1155,15 @@ export default function BoardView({
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
     return normalizedTasks.filter(task => {
-      // 1. Assignee / PIC Filter (Auto-view my tasks)
-      if (filterOnlyMyTasks && currentUser) {
+      // 1. Assignee / PIC Filter
+      if (workspaceMode === 'INDIVIDUAL' && currentUser) {
+        // In individual mode, strictly filter only my tasks
+        const myName = currentUser.name.toLowerCase().trim();
+        const myEmail = currentUser.email.toLowerCase().trim();
+        const pic = (task.PIC || task.Assignee || '').toLowerCase().trim();
+        const isMine = pic === myName || pic === myEmail || pic.includes(myName) || (myEmail && pic.includes(myEmail));
+        if (!isMine) return false;
+      } else if (filterOnlyMyTasks && currentUser) {
         const myName = currentUser.name.toLowerCase().trim();
         const myEmail = currentUser.email.toLowerCase().trim();
         const pic = (task.PIC || task.Assignee || '').toLowerCase().trim();
@@ -1379,7 +1432,7 @@ export default function BoardView({
   };
 
   return (
-    <div className="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className="bg-slate-50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-200 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
       <AppNav user={currentUser} pendingUsersCount={pendingUsersCount} />
 
       <div className="max-w-[1500px] w-full mx-auto p-4 sm:p-6 md:p-10 space-y-6 flex-1">
@@ -1392,19 +1445,19 @@ export default function BoardView({
         )}
 
         {/* Top Header */}
-        <header className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <header className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Project Activity Board
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                {t('board', 'title')}
               </h1>
               <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 Turso DB & Cloudinary
               </span>
             </div>
-            <p className="text-slate-500 text-xs sm:text-sm mt-1">
-              Drag & drop tiket untuk ubah status, kelola tiket tim, upload lampiran foto & pantau waktu.
+            <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 text-xs sm:text-sm mt-1">
+              {t('board', 'desc')}
             </p>
           </div>
 
@@ -1420,33 +1473,69 @@ export default function BoardView({
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
-              <span>Tambah Tiket</span>
+              <span>{t('board', 'btn_add')}</span>
             </button>
 
+            {/* Workspace Mode Toggles */}
+            <div className="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-400 dark:text-slate-500 ml-2">
+              <button
+                type="button"
+                onClick={() => handleWorkspaceModeChange('INDIVIDUAL')}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${
+                  workspaceMode === 'INDIVIDUAL'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 font-bold shadow-xs border border-indigo-100'
+                    : 'text-slate-600 dark:text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-white'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>{t('board', 'mode_individual')}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleWorkspaceModeChange('GROUP')}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${
+                  workspaceMode === 'GROUP'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 font-bold shadow-xs border border-indigo-100'
+                    : 'text-slate-600 dark:text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-white'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>{t('board', 'mode_group')}</span>
+              </button>
+            </div>
+
             {/* View Mode Buttons */}
-            <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-medium text-slate-600">
+            <div className="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-400 dark:text-slate-500">
               <button
                 type="button"
                 onClick={() => setViewMode('KANBAN')}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${
                   viewMode === 'KANBAN'
-                    ? 'bg-white text-slate-900 font-bold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-white'
                 }`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="3" width="7" height="18" rx="1"></rect>
                   <rect x="14" y="3" width="7" height="18" rx="1"></rect>
                 </svg>
-                <span>Kanban</span>
+                <span>{t('board', 'view_kanban')}</span>
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode('TIMELINE')}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${
                   viewMode === 'TIMELINE'
-                    ? 'bg-white text-slate-900 font-bold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-white'
                 }`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1457,86 +1546,90 @@ export default function BoardView({
                   <line x1="3" y1="12" x2="3.01" y2="12"></line>
                   <line x1="3" y1="18" x2="3.01" y2="18"></line>
                 </svg>
-                <span>Timeline</span>
+                <span>{t('board', 'view_list')}</span>
               </button>
             </div>
           </div>
         </header>
 
         {/* Filter & Control Bar */}
-        <section className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <section className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs space-y-4">
           {/* Row 1: Assignee quick toggle & Search & Filters */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
-            {/* Quick Assignee Toggle */}
-            <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
-              {currentUser && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFilterOnlyMyTasks(true);
-                    setSelectedAssignee('ALL');
-                  }}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
-                    filterOnlyMyTasks
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  👤 Tiket Saya
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setFilterOnlyMyTasks(false)}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
-                  !filterOnlyMyTasks && selectedAssignee === 'ALL'
-                    ? 'bg-white text-slate-900 shadow-xs font-black'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                🌐 Semua Tiket ({taskList.length})
-              </button>
-            </div>
-
-            {/* Assignee PIC Dropdown Filter */}
-            {usersList.length > 0 && (
-              <div className="relative">
-                <select
-                  value={filterOnlyMyTasks ? 'MY_TASKS' : selectedAssignee}
-                  onChange={e => {
-                    const val = e.target.value;
-                    if (val === 'MY_TASKS') {
+          {workspaceMode === 'GROUP' && (
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+              {/* Quick Assignee Toggle */}
+              <div className="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                {currentUser && (
+                  <button
+                    type="button"
+                    onClick={() => {
                       setFilterOnlyMyTasks(true);
                       setSelectedAssignee('ALL');
-                    } else {
-                      setFilterOnlyMyTasks(false);
-                      setSelectedAssignee(val);
-                    }
-                  }}
-                  className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3.5 py-2 pr-8 focus:ring-2 focus:ring-indigo-500 focus:bg-white cursor-pointer"
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                      filterOnlyMyTasks
+                        ? 'bg-indigo-600 text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-white'
+                    }`}
+                  >
+                    <FiUser size={14} />
+                    {t('board', 'filter_my')}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setFilterOnlyMyTasks(false)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                    !filterOnlyMyTasks && selectedAssignee === 'ALL'
+                      ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-black'
+                      : 'text-slate-600 dark:text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:text-white'
+                  }`}
                 >
-                  <option value="ALL">Filter PIC: Semua Tim</option>
-                  {currentUser && <option value="MY_TASKS">👤 Tiket Saya ({currentUser.name})</option>}
-                  {usersList.map(u => (
-                    <option key={u.id} value={u.name}>
-                      PIC: {u.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="m6 9 6 6 6-6"/>
-                  </svg>
-                </div>
+                  <FiGlobe size={14} />
+                  {t('board', 'filter_all', { count: taskList.length })}
+                </button>
               </div>
-            )}
-          </div>
+
+              {/* Assignee PIC Dropdown Filter */}
+              {usersList.length > 0 && (
+                <div className="relative">
+                  <select
+                    value={filterOnlyMyTasks ? 'MY_TASKS' : selectedAssignee}
+                    onChange={e => {
+                      const val = e.target.value;
+                      if (val === 'MY_TASKS') {
+                        setFilterOnlyMyTasks(true);
+                        setSelectedAssignee('ALL');
+                      } else {
+                        setFilterOnlyMyTasks(false);
+                        setSelectedAssignee(val);
+                      }
+                    }}
+                    className="appearance-none bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-xl px-3.5 py-2 pr-8 focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 cursor-pointer"
+                  >
+                    <option value="ALL">{t('board', 'filter_pic_all')}</option>
+                    {currentUser && <option value="MY_TASKS">{t('board', 'filter_pic_my', { name: currentUser.name })}</option>}
+                    {usersList.map(u => (
+                      <option key={u.id} value={u.name}>
+                        PIC: {u.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400 dark:text-slate-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Search Input */}
             <div className="relative">
               <label htmlFor="search-input" className="sr-only">Cari Tiket / Detail</label>
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 dark:text-slate-500">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -1548,7 +1641,7 @@ export default function BoardView({
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Cari project, tiket, PIC, detail..."
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs font-medium rounded-xl pl-9 pr-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium rounded-xl pl-9 pr-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-all"
               />
             </div>
 
@@ -1559,16 +1652,16 @@ export default function BoardView({
                 id="project-filter"
                 value={selectedProject}
                 onChange={e => setSelectedProject(e.target.value)}
-                className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-800 text-xs font-medium rounded-xl px-3.5 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white cursor-pointer transition-all"
+                className="w-full appearance-none bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 cursor-pointer transition-all"
               >
-                <option value="ALL">Semua Project ({taskList.length})</option>
+                <option value="ALL">{t('board', 'filter_proj_all')} ({taskList.length})</option>
                 {projectStats.uniqueProjects.map(project => (
                   <option key={project} value={project}>
                     {project} ({projectStats.counts[project]})
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400 dark:text-slate-500">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="m6 9 6 6 6-6"/>
                 </svg>
@@ -1582,13 +1675,13 @@ export default function BoardView({
                 id="sort-filter"
                 value={sortOption}
                 onChange={e => setSortOption(e.target.value as SortOption)}
-                className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-800 text-xs font-medium rounded-xl px-3.5 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white cursor-pointer transition-all"
+                className="w-full appearance-none bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 cursor-pointer transition-all"
               >
                 <option value="NEWEST">Urutkan: Pengerjaan Terbaru</option>
                 <option value="OLDEST">Urutkan: Pengerjaan Terlama</option>
                 <option value="PROJECT_ASC">Urutkan: Nama Project (A-Z)</option>
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400 dark:text-slate-500">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="m6 9 6 6 6-6"/>
                 </svg>
@@ -1610,7 +1703,7 @@ export default function BoardView({
                   <span>Reset Filter</span>
                 </button>
               ) : (
-                <span className="text-xs text-slate-400 italic px-2">
+                <span className="text-xs text-slate-400 dark:text-slate-500 italic px-2">
                   Total {sortedTasks.length} dari {taskList.length} tiket
                 </span>
               )}
@@ -1618,9 +1711,9 @@ export default function BoardView({
           </div>
 
           {/* Date Filter Presets & Custom Range */}
-          <div className="pt-3 border-t border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-xs font-bold text-slate-500 mr-1">Filter Tanggal:</span>
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 mr-1">Filter Tanggal:</span>
               {(
                 [
                   { id: 'ALL', label: 'Semua Waktu' },
@@ -1637,7 +1730,7 @@ export default function BoardView({
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     dateFilter === tab.id
                       ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:bg-slate-700/80 hover:text-slate-900 dark:text-white'
                   }`}
                 >
                   {tab.label}
@@ -1647,20 +1740,20 @@ export default function BoardView({
 
             {/* Custom Date Inputs if CUSTOM is active */}
             {dateFilter === 'CUSTOM' && (
-              <div className="flex items-center gap-2 w-full md:w-auto bg-slate-50 p-2 rounded-xl border border-slate-200 text-xs">
+              <div className="flex items-center gap-2 w-full md:w-auto bg-slate-50 dark:bg-slate-950 p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
                 <input
                   type="date"
                   value={customStartDate}
                   onChange={e => setCustomStartDate(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-700 text-xs focus:ring-1 focus:ring-indigo-500"
+                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-slate-700 dark:text-slate-300 text-xs focus:ring-1 focus:ring-indigo-500"
                   aria-label="Tanggal Awal"
                 />
-                <span className="text-slate-400">s/d</span>
+                <span className="text-slate-400 dark:text-slate-500">s/d</span>
                 <input
                   type="date"
                   value={customEndDate}
                   onChange={e => setCustomEndDate(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-700 text-xs focus:ring-1 focus:ring-indigo-500"
+                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-slate-700 dark:text-slate-300 text-xs focus:ring-1 focus:ring-indigo-500"
                   aria-label="Tanggal Akhir"
                 />
               </div>
@@ -1705,7 +1798,7 @@ export default function BoardView({
                   className={`rounded-2xl p-4 border flex flex-col h-full transition-all duration-200 ${
                     dragOverColKey === key
                       ? 'bg-indigo-50/90 ring-2 ring-indigo-400 ring-dashed shadow-md'
-                      : 'bg-slate-100/70 border-slate-200'
+                      : 'bg-slate-100 dark:bg-slate-800/70 border-slate-200 dark:border-slate-700'
                   }`}
                 >
                   {/* Column Header */}
@@ -1713,7 +1806,7 @@ export default function BoardView({
                     <h2 className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg border ${headerColor}`}>
                       {title}
                     </h2>
-                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full border bg-white shadow-xs ${badgeColor}`}>
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full border bg-white dark:bg-slate-900 shadow-xs ${badgeColor}`}>
                       {items.length}
                     </span>
                   </div>
@@ -1739,13 +1832,13 @@ export default function BoardView({
                               setDragOverColKey(null);
                             }}
                             onClick={() => setActiveDetailTask(item)}
-                            className={`bg-white p-4 rounded-xl shadow-xs border border-slate-200/80 hover:shadow-md hover:border-indigo-300 transition-all duration-200 group flex flex-col gap-3 cursor-grab active:cursor-grabbing relative select-none ${
+                            className={`bg-white dark:bg-slate-900 p-4 rounded-xl shadow-xs border border-slate-200 dark:border-slate-700/80 hover:shadow-md hover:border-indigo-300 transition-all duration-200 group flex flex-col gap-3 cursor-grab active:cursor-grabbing relative select-none ${
                               draggedTaskId === item.id ? 'opacity-40 ring-2 ring-indigo-500 ring-dashed scale-95' : ''
                             }`}
                           >
                             {/* Project Name & Actions */}
                             <div className="flex justify-between items-start gap-2">
-                              <span className="font-bold text-slate-900 text-sm leading-snug group-hover:text-indigo-600 transition-colors">
+                              <span className="font-bold text-slate-900 dark:text-white text-sm leading-snug group-hover:text-indigo-600 transition-colors">
                                 {item.Project || 'Untitled Project'}
                               </span>
 
@@ -1756,7 +1849,7 @@ export default function BoardView({
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={e => e.stopPropagation()}
-                                    className="text-slate-400 hover:text-indigo-600 text-sm font-medium transition-colors p-1 hover:bg-slate-50 rounded"
+                                    className="text-slate-400 dark:text-slate-500 hover:text-indigo-600 text-sm font-medium transition-colors p-1 hover:bg-slate-50 dark:bg-slate-950 rounded"
                                     title="Buka tiket eksternal"
                                   >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1770,21 +1863,21 @@ export default function BoardView({
                             </div>
 
                             {/* Ticket Title */}
-                            <div className="text-xs font-semibold text-slate-800 line-clamp-2">
+                            <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 line-clamp-2">
                               {content.title}
                             </div>
 
                             {/* Formatted description preview */}
-                            <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 max-h-24 overflow-hidden relative">
+                            <div className="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 max-h-24 overflow-hidden relative">
                               <FormattedDescription text={content.detailText || item['Label ticket']} />
                               <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-slate-50 to-transparent pointer-events-none" />
                             </div>
 
                             {/* Footer Badges (Waktu, Tanggal & Attachments) */}
-                            <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+                            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-500">
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 {formattedDate ? (
-                                  <span className="inline-flex items-center gap-1 font-medium bg-slate-100 px-2 py-0.5 rounded text-slate-600">
+                                  <span className="inline-flex items-center gap-1 font-medium bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400 dark:text-slate-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                       <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                       <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -1794,7 +1887,7 @@ export default function BoardView({
                                     {formattedDate}
                                   </span>
                                 ) : (
-                                  <span className="text-slate-400">Terbaru</span>
+                                  <span className="text-slate-400 dark:text-slate-500">Terbaru</span>
                                 )}
 
                                 {attachmentsCount > 0 && (
@@ -1821,7 +1914,7 @@ export default function BoardView({
                         );
                       })
                     ) : (
-                      <div className="text-xs text-slate-400 italic text-center py-10 border border-dashed border-slate-200 rounded-xl bg-white/50">
+                      <div className="text-xs text-slate-400 dark:text-slate-500 italic text-center py-10 border border-dashed border-slate-200 dark:border-slate-700 rounded-xl bg-white/50">
                         Tidak ada tiket di status ini
                       </div>
                     )}
@@ -1832,23 +1925,23 @@ export default function BoardView({
           </div>
         ) : (
           /* Timeline / List View */
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs overflow-hidden">
+            <div className="p-4 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                 Timeline Riwayat Pengerjaan ({sortedTasks.length} Tiket)
               </h2>
-              <span className="text-xs text-slate-500">Urutan: Terbaru ke Terlama</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">Urutan: Terbaru ke Terlama</span>
             </div>
 
             {sortedTasks.length > 0 ? (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {sortedTasks.map((task, idx) => {
                   const content = extractTaskContent(task);
                   const formattedDate = formatDisplayDate(task._date, task._dateRaw);
                   const statusRaw = task.Status ? task.Status.trim().toLowerCase() : 'ongoing';
                   const attachmentsCount = task._attachments?.length || 0;
 
-                  let statusBadge = 'bg-slate-100 text-slate-700 border-slate-200';
+                  let statusBadge = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
                   if (statusRaw.includes('done')) statusBadge = 'bg-emerald-50 text-emerald-700 border-emerald-200';
                   else if (statusRaw.includes('blocker')) statusBadge = 'bg-rose-50 text-rose-700 border-rose-200';
                   else if (statusRaw.includes('progress')) statusBadge = 'bg-indigo-50 text-indigo-700 border-indigo-200';
@@ -1868,7 +1961,7 @@ export default function BoardView({
                             {task.Status || 'Ongoing'}
                           </span>
                           {formattedDate && (
-                            <span className="text-xs text-slate-500 flex items-center gap-1 font-medium">
+                            <span className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 flex items-center gap-1 font-medium">
                               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -1893,12 +1986,12 @@ export default function BoardView({
                           )}
                         </div>
 
-                        <h3 className="text-sm font-bold text-slate-900 leading-snug">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
                           {content.title}
                         </h3>
 
                         {content.detailText && (
-                          <p className="text-xs text-slate-500 line-clamp-1 font-normal">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 line-clamp-1 font-normal">
                             {content.detailText.replace(/\r?\n/g, ' ')}
                           </p>
                         )}
@@ -1922,7 +2015,7 @@ export default function BoardView({
                           </a>
                         )}
 
-                        <span className="text-xs text-slate-400 font-medium">
+                        <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
                           Detail &rarr;
                         </span>
                       </div>
@@ -1931,7 +2024,7 @@ export default function BoardView({
                 })}
               </div>
             ) : (
-              <div className="p-12 text-center text-slate-400 text-sm italic">
+              <div className="p-12 text-center text-slate-400 dark:text-slate-500 text-sm italic">
                 Tidak ada tiket yang cocok dengan filter saat ini.
               </div>
             )}
@@ -1962,6 +2055,8 @@ export default function BoardView({
           onClose={() => setIsCreateOpen(false)}
           onSubmit={handleCreateTask}
           isSaving={isSaving}
+          workspaceMode={workspaceMode}
+          currentUser={currentUser}
         />
 
         {/* Edit Task Modal */}
@@ -1974,6 +2069,8 @@ export default function BoardView({
           onClose={() => setEditingTask(null)}
           onSubmit={handleUpdateTask}
           isSaving={isSaving}
+          workspaceMode={workspaceMode}
+          currentUser={currentUser}
         />
 
         {/* Delete Confirmation Modal */}

@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { User } from '../lib/users';
 import { Task } from '../board-view';
 import AppNav from '../components/app-nav';
+import { FaCrown } from 'react-icons/fa';
+import { FiCheckCircle, FiUpload } from 'react-icons/fi';
 
 interface ProfileClientProps {
   currentUser: User;
@@ -140,7 +142,7 @@ export default function ProfileClient({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 flex flex-col selection:bg-indigo-500 selection:text-white">
       <AppNav user={user} pendingUsersCount={pendingUsersCount} />
 
       {toastMessage && (
@@ -152,11 +154,11 @@ export default function ProfileClient({
 
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 md:p-10 space-y-6">
         {/* Header */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Pengaturan Profil & Keamanan
           </h1>
-          <p className="text-slate-500 text-xs sm:text-sm mt-1">
+          <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 text-xs sm:text-sm mt-1">
             Kelola informasi data diri, foto avatar, dan kata sandi akun Anda.
           </p>
         </div>
@@ -174,7 +176,7 @@ export default function ProfileClient({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left Column: Avatar & Overview */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col items-center text-center space-y-4">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs flex flex-col items-center text-center space-y-4">
             <div className="relative group">
               {avatar ? (
                 <img
@@ -195,30 +197,26 @@ export default function ProfileClient({
             </div>
 
             <div>
-              <h3 className="font-extrabold text-slate-900 text-base">{user.name}</h3>
-              <p className="text-xs text-slate-500">{user.email}</p>
+              <h3 className="font-extrabold text-slate-900 dark:text-white text-base">{user.name}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">{user.email}</p>
               <div className="mt-2 flex items-center justify-center gap-2">
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${
-                  user.role === 'master'
-                    ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                    : 'bg-slate-100 text-slate-600 border border-slate-200'
-                }`}>
-                  {user.role === 'master' ? '👑 Master User' : 'Team Member'}
+                <span className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${user.role === 'master'
+                  ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700'
+                  }`}>
+                  {user.role === 'master' ? 'Master User' : 'Team Member'}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  ✓ Aktif
+                <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <FiCheckCircle size={12} />
+                  Aktif
                 </span>
               </div>
             </div>
 
             {/* Upload Button */}
             <div className="w-full pt-2">
-              <label className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold cursor-pointer transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="17 8 12 3 7 8" />
-                  <line x1="12" y1="3" x2="12" y2="15" />
-                </svg>
+              <label className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold cursor-pointer transition-colors">
+                <FiUpload size={14} />
                 <span>{isUploadingAvatar ? 'Mengunggah...' : 'Ganti Foto Avatar'}</span>
                 <input
                   type="file"
@@ -231,14 +229,14 @@ export default function ProfileClient({
             </div>
 
             {/* Quick Stats */}
-            <div className="w-full pt-4 border-t border-slate-100 text-left space-y-2">
+            <div className="w-full pt-4 border-t border-slate-100 dark:border-slate-800 text-left space-y-2">
               <div className="flex justify-between text-xs font-semibold">
-                <span className="text-slate-500">Tiket Ditugaskan:</span>
-                <span className="font-bold text-slate-900">{assignedTasks.length} Tiket</span>
+                <span className="text-slate-500 dark:text-slate-400 dark:text-slate-500">Tiket Ditugaskan:</span>
+                <span className="font-bold text-slate-900 dark:text-white">{assignedTasks.length} Tiket</span>
               </div>
               <div className="flex justify-between text-xs font-semibold">
-                <span className="text-slate-500">Bergabung:</span>
-                <span className="text-slate-700">
+                <span className="text-slate-500 dark:text-slate-400 dark:text-slate-500">Bergabung:</span>
+                <span className="text-slate-700 dark:text-slate-300">
                   {user.createdAt ? new Date(user.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'}
                 </span>
               </div>
@@ -248,13 +246,13 @@ export default function ProfileClient({
           {/* Right Column: Forms */}
           <div className="md:col-span-2 space-y-6">
             {/* Edit Name & Profile Form */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
-              <h3 className="text-sm font-extrabold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
+              <h3 className="text-sm font-extrabold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
                 Informasi Data Diri
               </h3>
               <form onSubmit={handleSaveProfile} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Nama Lengkap
                   </label>
                   <input
@@ -262,19 +260,19 @@ export default function ProfileClient({
                     required
                     value={name}
                     onChange={e => setName(e.target.value)}
-                    className="w-full px-3.5 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    className="w-full px-3.5 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Alamat Email (Tidak dapat diubah)
                   </label>
                   <input
                     type="email"
                     disabled
                     value={user.email}
-                    className="w-full px-3.5 py-2 text-xs font-medium bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed"
+                    className="w-full px-3.5 py-2 text-xs font-medium bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400 dark:text-slate-500 cursor-not-allowed"
                   />
                 </div>
 
@@ -291,13 +289,13 @@ export default function ProfileClient({
             </div>
 
             {/* Change Password Form */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
-              <h3 className="text-sm font-extrabold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
+              <h3 className="text-sm font-extrabold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
                 Ubah Kata Sandi
               </h3>
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Kata Sandi Saat Ini
                   </label>
                   <input
@@ -306,13 +304,13 @@ export default function ProfileClient({
                     value={currentPassword}
                     onChange={e => setCurrentPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full px-3.5 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                    className="w-full px-3.5 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-all"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       Kata Sandi Baru (Min. 6 Karakter)
                     </label>
                     <input
@@ -321,12 +319,12 @@ export default function ProfileClient({
                       value={newPassword}
                       onChange={e => setNewPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-3.5 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                      className="w-full px-3.5 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       Konfirmasi Kata Sandi Baru
                     </label>
                     <input
@@ -335,7 +333,7 @@ export default function ProfileClient({
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-3.5 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                      className="w-full px-3.5 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-all"
                     />
                   </div>
                 </div>

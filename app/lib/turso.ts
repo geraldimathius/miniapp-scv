@@ -70,6 +70,47 @@ export async function ensureDbTables() {
     );
   `);
 
+  // Create time_tracker_tasks table
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS time_tracker_tasks (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      title TEXT NOT NULL,
+      task_description TEXT,
+      status TEXT DEFAULT 'todo',
+      progress INTEGER DEFAULT 0,
+      project TEXT,
+      ticket_number TEXT,
+      task_url TEXT,
+      tags TEXT,
+      attachments TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+
+  // Create time_logs table
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS time_logs (
+      id TEXT PRIMARY KEY,
+      task_id TEXT NOT NULL,
+      user_id TEXT,
+      date TEXT NOT NULL,
+      start_time TEXT,
+      end_time TEXT,
+      duration_string TEXT,
+      duration_minutes INTEGER NOT NULL,
+      log_description TEXT,
+      billable INTEGER DEFAULT 1,
+      tags TEXT,
+      person TEXT,
+      attachments TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (task_id) REFERENCES time_tracker_tasks(id) ON DELETE CASCADE
+    );
+  `);
+
   tablesInitialized = true;
 }
 

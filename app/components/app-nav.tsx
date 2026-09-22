@@ -4,6 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { User } from '../lib/users';
+import { useTranslation } from '../lib/i18n/LanguageProvider';
+import { setLanguage } from '../actions/i18n';
+import { useTheme } from 'next-themes';
+import { FiSun, FiMoon } from 'react-icons/fi';
 
 interface AppNavProps {
   user?: User | null;
@@ -17,6 +21,19 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
   const [pendingUsersCount, setPendingUsersCount] = useState<number>(initialPending);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t, locale } = useTranslation();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleLanguageSwitch = async (newLocale: string) => {
+    if (locale === newLocale) return;
+    await setLanguage(newLocale);
+    router.refresh();
+  };
 
   // Fallback client-side fetch if user wasn't passed via props
   useEffect(() => {
@@ -28,7 +45,7 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
             setUser(data.user);
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [user]);
 
@@ -56,7 +73,7 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
 
   const navItems = [
     {
-      name: 'Dashboard',
+      name: t('nav', 'dashboard'),
       href: '/dashboard',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -68,11 +85,12 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
       ),
     },
     {
-      name: 'Activity Board',
-      href: '/board',
+      name: t('nav', 'timelogs'),
+      href: '/timelogs',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M4 6h16M4 12h16M4 18h7" />
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
         </svg>
       ),
     },
@@ -80,7 +98,7 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
 
   if (user?.role === 'master') {
     navItems.push({
-      name: 'Kelola User',
+      name: t('nav', 'users'),
       href: '/users',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -104,27 +122,27 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
   };
 
   return (
-    <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 md:px-10">
+    <nav className="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 shadow-xs">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left Brand & Links */}
           <div className="flex items-center gap-8">
-            <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2.5 group">
+            <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2.5 group shrink-0">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-black text-base shadow-sm shadow-indigo-200 group-hover:scale-105 transition-transform">
                 S
               </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold text-slate-900 tracking-tight text-base leading-none">
+              <div className="hidden lg:flex flex-col">
+                <span className="font-extrabold text-slate-900 dark:text-white tracking-tight text-base leading-none transition-colors">
                   SCV TaskHub
                 </span>
-                <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider mt-0.5">
+                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider mt-0.5 transition-colors">
                   Internal Tracker
                 </span>
               </div>
             </Link>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center gap-1.5">
+            <div className="hidden lg:flex items-center gap-1.5">
               {navItems.map(item => {
                 const isActive = pathname === item.href || (item.href === '/board' && pathname.startsWith('/board'));
                 const isUsers = item.href === '/users';
@@ -133,11 +151,10 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                      isActive
-                        ? 'bg-indigo-50 text-indigo-700 shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
-                    }`}
+                    className={`relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${isActive
+                      ? 'bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
+                      }`}
                   >
                     {item.icon}
                     <span>{item.name}</span>
@@ -155,16 +172,15 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
           </div>
 
           {/* Right User Pill & Profile/Logout or Guest links */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             {user ? (
               <>
                 <Link
                   href="/profile"
-                  className={`flex items-center gap-2.5 p-1.5 pr-3.5 rounded-full border transition-all ${
-                    pathname === '/profile'
-                      ? 'border-indigo-300 bg-indigo-50/70 text-indigo-900 shadow-xs'
-                      : 'border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700'
-                  }`}
+                  className={`flex items-center gap-2.5 p-1.5 pr-3.5 rounded-full border transition-all ${pathname === '/profile'
+                    ? 'border-indigo-300 dark:border-indigo-700 bg-indigo-50/70 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-200 shadow-xs'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
+                    }`}
                   title="Buka Pengaturan Profil"
                 >
                   {user.avatar ? (
@@ -179,11 +195,11 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
                     </div>
                   )}
                   <div className="flex flex-col text-left">
-                    <span className="text-xs font-bold text-slate-800 leading-tight max-w-[120px] truncate">
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-tight max-w-[120px] truncate">
                       {user.name}
                     </span>
-                    <span className="text-[10px] text-slate-600 font-semibold leading-tight capitalize">
-                      {user.role === 'master' ? '👑 Master' : 'Member'}
+                    <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold leading-tight capitalize">
+                      {user.role === 'master' ? 'Master' : 'Member'}
                     </span>
                   </div>
                 </Link>
@@ -193,7 +209,7 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
                   title="Keluar dari akun"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -201,7 +217,7 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
                     <polyline points="16 17 21 12 16 7" />
                     <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
-                  <span>{isLoggingOut ? 'Keluar...' : 'Logout'}</span>
+                  <span>{isLoggingOut ? t('nav', 'logout_loading') : t('nav', 'logout')}</span>
                 </button>
               </>
             ) : (
@@ -210,24 +226,51 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
                   href="/login"
                   className="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-colors"
                 >
-                  Masuk
+                  {t('nav', 'login')}
                 </Link>
                 <Link
                   href="/register"
                   className="px-3.5 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs transition-colors"
                 >
-                  Daftar
+                  {t('nav', 'register')}
                 </Link>
               </div>
             )}
+
+            {/* Dark Mode Toggle */}
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                title="Toggle Dark Mode"
+              >
+                {theme === 'dark' ? <FiSun size={16} /> : <FiMoon size={16} />}
+              </button>
+            )}
+
+            {/* Language Switcher */}
+            <div className="flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
+              <button
+                onClick={() => handleLanguageSwitch('id')}
+                className={`px-2 py-1 text-[10px] font-bold rounded-md transition-colors ${locale === 'id' ? 'bg-white dark:bg-slate-700 shadow-xs text-indigo-700 dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+              >
+                ID
+              </button>
+              <button
+                onClick={() => handleLanguageSwitch('en')}
+                className={`px-2 py-1 text-[10px] font-bold rounded-md transition-colors ${locale === 'en' ? 'bg-white dark:bg-slate-700 shadow-xs text-indigo-700 dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+              >
+                EN
+              </button>
+            </div>
           </div>
 
-          {/* Mobile menu hamburger button */}
-          <div className="flex md:hidden items-center gap-2">
+          {/* Mobile & Tablet menu hamburger button */}
+          <div className="flex lg:hidden items-center gap-2">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-600 hover:bg-slate-100"
+              className="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               aria-label="Toggle Menu"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -247,9 +290,40 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
           </div>
         </div>
 
-        {/* Mobile menu dropdown */}
+        {/* Mobile & Tablet Language Switcher */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-3 border-t border-slate-100 space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-150">
+          <div className="lg:hidden flex items-center justify-between py-2 border-t border-slate-100 dark:border-slate-800 px-3">
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Pengaturan:</span>
+              {mounted && (
+                <button
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800"
+                >
+                  {theme === 'dark' ? <FiSun size={14} /> : <FiMoon size={14} />}
+                </button>
+              )}
+            </div>
+            <div className="flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
+              <button
+                onClick={() => handleLanguageSwitch('id')}
+                className={`px-2 py-1 text-[10px] font-bold rounded-md transition-colors ${locale === 'id' ? 'bg-white dark:bg-slate-700 shadow-xs text-indigo-700 dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400'}`}
+              >
+                ID
+              </button>
+              <button
+                onClick={() => handleLanguageSwitch('en')}
+                className={`px-2 py-1 text-[10px] font-bold rounded-md transition-colors ${locale === 'en' ? 'bg-white dark:bg-slate-700 shadow-xs text-indigo-700 dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400'}`}
+              >
+                EN
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile & Tablet menu dropdown */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden py-3 border-t border-slate-100 dark:border-slate-800 space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-150">
             {navItems.map(item => {
               const isActive = pathname === item.href;
               const isUsers = item.href === '/users';
@@ -259,9 +333,8 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold ${
-                    isActive ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50'
-                  }`}
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold ${isActive ? 'bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                    }`}
                 >
                   <div className="flex items-center gap-2">
                     {item.icon}
@@ -277,11 +350,11 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
             })}
 
             {user ? (
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between px-3 py-2">
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-3 py-2">
                 <Link
                   href="/profile"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-2 text-xs font-bold text-slate-700"
+                  className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300"
                 >
                   {user.avatar ? (
                     <img src={user.avatar} alt={user.name} className="w-6 h-6 rounded-full object-cover" />
@@ -296,26 +369,26 @@ export default function AppNav({ user: initialUser, pendingUsersCount: initialPe
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="text-xs font-bold text-rose-600 hover:underline cursor-pointer"
+                  className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
                 >
-                  Logout
+                  {t('nav', 'logout')}
                 </button>
               </div>
             ) : (
-              <div className="pt-2 border-t border-slate-100 flex items-center gap-2 px-3 py-2">
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 px-3 py-2">
                 <Link
                   href="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 text-center py-2 text-xs font-bold text-slate-700 bg-slate-100 rounded-xl"
+                  className="flex-1 text-center py-2 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-xl"
                 >
-                  Masuk
+                  {t('nav', 'login')}
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex-1 text-center py-2 text-xs font-bold text-white bg-indigo-600 rounded-xl"
                 >
-                  Daftar
+                  {t('nav', 'register')}
                 </Link>
               </div>
             )}

@@ -61,7 +61,7 @@ export default function LoginPage() {
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
           Masuk ke Akun Anda
         </h2>
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
           Belum punya akun?{' '}
           <Link href="/register" className="font-bold text-indigo-400 hover:text-indigo-300 hover:underline">
             Daftar di sini
@@ -129,7 +129,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-200"
                 >
                   {showPassword ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -170,7 +170,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 pt-6 border-t border-slate-800 text-center">
-            <Link href="/" className="text-xs text-slate-400 hover:text-slate-300">
+            <Link href="/" className="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-300">
               ← Kembali ke Beranda
             </Link>
           </div>

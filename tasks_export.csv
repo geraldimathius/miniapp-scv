@@ -1,0 +1,516 @@
+id,project,label_ticket,link_ticket,status,tanggal,waktu_pengerjaan,detail_pengerjaan,pic,attachments,created_at,updated_at
+sheet-tw-30125327-0-app---change-logo-10-10,Mitra10,App - Change Logo 10.10,https://teamwork.icubeonline.com/app/tasks/30125327,Done,,,,Mathius Geraldi,[],2026-09-17T00:18:33.730Z,2026-09-17T03:20:40.817Z
+sheet-row-1-mitra10-app---change-logo-11-11,Mitra10,App - Change Logo 11.11,,Ongoing,,,,Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T03:27:47.730Z
+sheet-row-2-mitra10-app---change-logo-12-12,Mitra10,App - Change Logo 12.12,,Ongoing,,,,Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T03:27:57.248Z
+sheet-tw-30122715-3-set-billing-customer-usin,Lautan Luas,Set billing customer using company address,https://teamwork.icubeonline.com/app/tasks/30122715,Done,,,,Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T03:19:36.776Z
+sheet-tw-30102587-4-feedback-cr-improvement-s,Erha,Feedback CR Improvement Skin analyzer,https://teamwork.icubeonline.com/app/tasks/30102587,Done,,,- styling button share,Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T03:20:32.080Z
+sheet-tw-30125335-5-pos---issue-duplicate-cus,Erha,POS - Issue duplicate customer phone number,https://teamwork.icubeonline.com/app/tasks/30125335,Done,,,,Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T03:19:07.947Z
+sheet-tw-30121087-6-apply-shipping-eta-to-dev,Obermain,Apply Shipping ETA to Dev site,https://teamwork.icubeonline.com/app/tasks/30121087,Done,,,,Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T03:19:58.478Z
+sheet-row-7-mitra10-push-notif-bug,Mitra10,Push Notif BUG,,Blocker,,,"- duplicate
+- need handle new line message
+- clear message duplicate
+
+Blocker :
+- Menunggu dari BE clear",Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T01:02:10.000Z
+sheet-tw-30110253-8-feedback-wizzy---when-ent,Mitra10,Feedback Wizzy,https://teamwork.icubeonline.com/app/tasks/30110253,Done,,,"- When entering the query “toto kloset ce9” and pressing Enter to perform the search, the query is being sent as “toto klosetce9”, where the second space is removed.",Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T03:20:07.455Z
+sheet-tw-30102587-9-feedback-skinai---social-,Erha,Feedback SkinAI,https://teamwork.icubeonline.com/app/tasks/30102587,Done,,,"- Social share tidak perlu otomatis download, agar tidak membingungkan saat muncul “Download file again?” sebelum redirect ke social media.
+- Karena tidak bisa auto create post, maka tambahkan wording dibawah social share sbb : Caption will be copied when you click a platform.
+- Untuk Tiktok, apakah linknya keliru? Atau memang tidak support untuk open App",Mathius Geraldi,[],2026-09-17T00:18:33.732Z,2026-09-17T03:20:22.477Z
+sheet-tw-30091722-10-gopay-miniapp-fixing-paym,Mitra10,Gopay Miniapp fixing payment redirect,https://teamwork.icubeonline.com/app/tasks/30091722,Done,,,,Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T03:19:16.679Z
+sheet-row-11-9to9-app-reward-point---initia,9to9,App Reward Point - Initial Setup,,Done,2026-09-15,,"1        Investigasi & Audit Konfigurasi Firebase
+• Pengecekan Firebase Project aktif (to9-apps) pada google-services.json (Android) & GoogleService-Info.plist (iOS).
+• Analisis error permission Firebase Cloud Messaging di console serta verifikasi kebutuhan APNs Auth Key (.p8) untuk push notifikasi iOS vs Firebase Analytics.        45 menit (0.75 jam)
+2        Implementasi Pengumpulan Data Reward Point (Register Flow)
+• Implementasi penarikan tanggal pertama install (DeviceInfo.getFirstInstallTime()) dan Unique Device ID (DeviceInfo.getUniqueId()).
+• Pengambilan token FCM device (getFcmTokenWithRetry) serta update GraphQL schema CREATE_CUSTOMER_SCHEMA untuk mendapatkan Shopify customer.id.
+• Penyusunan format payload lengkap (email, phone, customer_id, device_id, first_install_date, fcm_token, platform, app_version, build_number).        1 jam 15 menit (1.25 jam)
+3        Pembuatan Modul Service API & Preview Alert Dialog
+• Pembuatan modul service submitRewardPointRegistration (reward.ts) dengan error handling dan pembacaan konfigurasi .env.
+• Penambahan typing env variable (APP_REWARD_URL & APP_REWARD_KEY) di types/index.ts.
+• Implementasi Alert.alert dialog di RegisterScreen.hook.ts untuk menampilkan preview data JSON payload saat registrasi berhasil sebelum diarahkan ke login.        45 menit (0.75 jam)
+4        Optimasi Native Push Notification & Handling Klik Notifikasi
+• Penambahan permission POST_NOTIFICATIONS di AndroidManifest.xml untuk dukungan Android 13+ (API 33+).
+• Penambahan listener onTokenRefresh di useFirebasePushNotification.ts untuk auto-sync token FCM terbaru.
+• Integrasi handler quit-state / cold-start notification via notifee.getInitialNotification() dan perbaikan fallback navigasi Home tab di useHandleDeeplink.ts.        45 menit (0.75 jam)
+5        Local Testing & Verifikasi Flow di Android & iOS
+• Testing flow registrasi di device Android: verifikasi First Install Date, Device ID, FCM Token, dan tampilan alert payload.
+• Testing flow registrasi di device iOS: verifikasi IDFV device ID, kelancaran form registrasi, dan format payload.
+• Testing interaksi klik push notification di berbagai kondisi state (Foreground via Notifee, Background, dan Quit/Killed State).        45 menit (0.75 jam)",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T03:21:00.391Z
+sheet-tw-30126340-12-marketing-otomasi--webeng,Mitra10,Marketing otomasi (Webengage),https://teamwork.icubeonline.com/app/tasks/30126340,Done,2026-09-15,,"================================================================================
+TIMESHEET / LOG TIME PENGERJAAN
+Task        : Integrasi Marketing Automation WebEngage (Web SDK, User & Event Tracking)
+Project     : PWA Mitra10
+Developer   : Frontend Developer
+Total Waktu : 20.0 Jam (~2.5 Hari Kerja)
+================================================================================
+
+[HARI 1] - 8.0 Jam
+--------------------------------------------------------------------------------
+1. Analisis & Perencanaan Arsitektur Tracking (2.0 Jam)
+   - Mempelajari dokumentasi WebEngage (Web SDK, REST API User, Event Tracking).
+   - Mapping event e-commerce funnel Mitra10 (View, Search, Cart, Checkout, Purchase).
+   - Mengidentifikasi file sentral dan batasan direktori (khusus folder `src/`).
+
+2. Setup SDK & Modul Helper Sentral (3.0 Jam)
+   - Menambahkan konfigurasi dinamis WebEngage pada `swift.config.js` (Multi-region & fallback env).
+   - Menambahkan module path alias `@helper_webengage` pada `babel.config.json` & `jsconfig.json`.
+   - Membuat helper sentral `src/helpers/webengage.js` dengan proteksi SSR, sanitasi data, formatting phone number E.164, dan custom/system attributes mapper.
+   - Injeksi snippet SPA WebEngage di `_document.js` dan inisialisasi lifecycle login di `_app.js`.
+
+3. Integrasi User Lifecycle & Autentikasi (3.0 Jam)
+   - Implementasi Login & sinkronisasi user attributes (`login/core.js`, `authentication/core.js`).
+   - Implementasi Register tracking (`register/core.js`).
+   - Implementasi Logout & session reset di Desktop Header, Customer Layout, dan Mobile Account Drawer.
+
+--------------------------------------------------------------------------------
+[HARI 2] - 8.0 Jam
+--------------------------------------------------------------------------------
+4. Integrasi Tracking Catalog, Search, & Wishlist (2.5 Jam)
+   - Implementasi event `Product Viewed` di halaman PDP (`product/core.js`).
+   - Implementasi event `Category Viewed` di halaman PLP (`catalog/category/components/index.js`).
+   - Implementasi event `Searched` di Header Desktop & Search Modal Popup.
+   - Implementasi event `Added to Wishlist` & `Removed from Wishlist` (PDP, Catalog Item, & Wishlist Page).
+
+5. Integrasi Cart Funnel & Penanganan Qty (3.5 Jam)
+   - Implementasi event `Added to Cart` untuk produk Simple, Configurable, Bundle, dan Virtual.
+   - Update GraphQL Schema Cart (`cart/services/graphql/schema.js`) untuk fetch `sku` dan `categories`.
+   - Implementasi event `Removed from Cart` di Main Cart Page (`cart/core.js`) dan Mini Cart Drawer (`mini/core.js`).
+   - Implementasi logic tracking penambahan qty (`Added to Cart` dengan delta) & pengurangan qty (`Removed from Cart` dengan delta).
+
+6. Integrasi Review & Social Share (2.0 Jam)
+   - Implementasi tracking `Rated or Reviewed Product` pada submit review dialog PDP.
+   - Implementasi tracking `Shared on Social Media` pada share popup PDP.
+
+--------------------------------------------------------------------------------
+[HARI 3] - 4.0 Jam
+--------------------------------------------------------------------------------
+7. Integrasi Checkout & Purchase Funnel (2.5 Jam)
+   - Update GraphQL Schema Checkout (`checkout/services/graphql/schema.js`) untuk item vendor data.
+   - Implementasi event `Checkout Started` di `checkout/core.js`.
+   - Bugfix duplicate trigger: Penambahan guard ref `trackedCheckoutCartId` agar `Checkout Started` tidak terpanggil berulang kali saat user ubah shipping/payment.
+   - Implementasi event `Checkout Completed` di `thanks/core.js` (total order, coupon, tax, shipping, item list).
+
+8. Testing, Linting & Verifikasi Keamanan (1.5 Jam)
+   - Pengujian parsing payload event (Product ID, SKU, Category, Price, Currency).
+   - Validasi fallback handling jika WebEngage script diblokir/adblocker/belum ada env.
+   - Code hygiene, ESLint syntax check, dan verifikasi struktur module alias.
+
+================================================================================
+RINGKASAN TOTAL: 20 Jam
+Status: Selesai (Menunggu License Code / Environment Variables untuk UAT Final)
+================================================================================",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T07:11:54.323Z
+sheet-row-13-lautan-luas-promo-tidak-langsung-appl,Lautan Luas,Promo tidak langsung apply,,Done,2026-09-15,,"""Task: Fix issue checkout summary & shipping calculation not updating automatically after applying/removing coupon code.
+Action: Implemented getUpdatedCart query inside DiscountSection to dynamically retrieve latest prices and shipping_addresses, synchronized Redux state and formik values without full page reload.
+Files: src/.../promo/index.js, src/.../default/components/index.js
+Time Spent: 2.5 Hours
+
+PR https://github.com/icube-mage/pwa-checkout-lautanluas/pull/37""",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T07:12:45.157Z
+sheet-row-15-mitra10-call---poc-plan-discussio,Mitra10,Call - POC Plan Discussion,,Done,2026-09-16,10.30 - 12.00,,Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T03:21:36.207Z
+sheet-row-16-9to9-app-reward---set-api-afte,9to9,App Reward - set API after register success,https://teamwork.icubeonline.com/app/tasks/30129473,Done,2026-09-16,,"1	Setup & Integrasi API Customer Register (App Reward Point)
+• Konfigurasi endpoint APP_REWARD_URL (https://middleware-9to9.testingnow.me/api/customer/register) dan API Key di .env.
+• Update flow pengiriman payload registrasi di reward.ts dan RegisterScreen.hook.ts.
+• Pengujian konektivitas endpoint via cURL & Postman untuk memastikan response backend berhasil tersimpan.	45 menit (0.75 jam)
+2	Investigasi & Debugging FCM Token Retrieval
+• Analisis root cause error SERVICE_NOT_AVAILABLE pada getMessaging().getToken() di Android logcat.
+• Konfirmasi dependency aktivasi Cloud Messaging API pada project Firebase (to9-apps) di Google Cloud / Firebase Console.	30 menit (0.5 jam)
+3	Setup & Verifikasi Firebase Cloud Messaging (FCM & APNs)
+• Verifikasi aktivasi menu Messaging di Firebase Console dashboard (create first campaign ready).
+• Pengecekan dan validasi file APNs Authentication Key (.p8) untuk konfigurasi Apple App (com.transmarco.9to9).	30 menit (0.5 jam)
+4	Testing & Pembuatan Panduan FCM Trigger Flow
+• Penyusunan format payload FCM HTTP v1 REST API untuk pengujian trigger pesan ke specific device FCM token.
+• Penyiapan panduan integrasi trigger push notification (format payload, parameter deeplink, dan penanganan token).	45 menit (0.75 jam)
+
+Total: ~2 Jam 30 Menit (2.5 jam)
+
+PR https://github.com/icubebysirclo/shopify-mobile-app/pull/
+
+[REWARD_POINT_PAYLOAD] {
+  ""email"": ""geraldimathius+1@gmail.com"",
+  ""phone"": ""+62859106907841"",
+  ""customer_id"": ""gid://shopify/Customer/9626865991829"",
+  ""device_id"": ""94011337d9902097"",
+  ""first_install_date"": ""2026-09-05T10:22:42.921Z"",
+  ""fcm_token"": """",
+  ""platform"": ""android"",
+  ""app_version"": ""3.0.12"",
+  ""build_number"": ""20250016""
+}",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-18T02:19:08.590Z
+sheet-tw-30110254-17-take-out-packing-kayu,Mitra10,Take out packing kayu,https://teamwork.icubeonline.com/app/tasks/30110254,Done,2026-09-15,,"1        Investigasi & Analisis Modul Checkout
+• Analisis dependency fitur packing kayu di modul checkout (itemPacking, shipping, schema GraphQL, dan GraphQL query/mutation terkait).
+• Analisis relasi packing kayu terhadap shipping method vendor dan penanganan kondisi cart.        30 menit (0.5 jam)
+
+2        Implementasi Takeout UI & Logic Packing Kayu
+• Takeout section & tampilan checkbox/modal konfirmasi packing kayu di itemPacking/view.js.
+• Menghapus pemanggilan komponen <ItemPacking /> serta cleanup state terkait (loadingCheckbox, attributeLayananInstalasi) di modules/checkout/pages/default/components/index.js.
+• Menghapus banner peringatan packing kayu (infoItemPacking) di bagian metode pengiriman (shipping/view.js).        45 menit (0.75 jam)
+
+3        Debugging & Fix Unhandled Runtime Error
+• Investigasi dan fixing runtime error GraphQL (""The shipping address is missing"").
+• Refactor itemPacking/core.js menjadi dummy component tanpa auto-mutasi di latar belakang saat address belum terpilih.        30 menit (0.5 jam)
+
+4        Code Quality & Linting Fix
+• Penyesuaian ESLint (formatting, unused variables, dangling commas, EOL newline) dan validasi eslint --fix (0 errors).        15 menit (0.25 jam)
+
+5        Local Testing & Verifikasi Checkout Flow
+• Restart local server dan pengujian alur checkout lokal (memastikan section packing kayu bersih, default false, tidak ada error GraphQL saat reload/pilih alamat).        30 menit (0.5 jam)
+
+6        Deployment & Verifikasi di Dev Site / Sandbox
+• Push branch, deployment ke environment development/staging, dan sanity test menyeluruh sebelum diserahkan ke QA.        30 menit (0.5 jam)
+
+Total Time: 3 Jam (3.0 Hours / 180 Menit)
+PR: https://github.com/icube-id/pwa-mitra10/pull/1038",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T03:21:24.456Z
+sheet-row-18-mitra10-cmlabs---update-url-produ,Mitra10,CMLabs - update url product & category at blog page,,Blocker,2026-09-16,,"Blocker : Need BE remove from DB by query
+1.⁠ ⁠URL produk lama yang masih aktif > tambahkan path /product/
+2.⁠ ⁠⁠URL produk lama yang sudah disable > dihapus internal link nya
+3.⁠ ⁠⁠URL kategori > diganti dengan URL baru yang sudah di mapping",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T06:38:12.793Z
+sheet-tw-30120072-19-testing-apple-pay-at-stag,Nickscali,Testing Apple Pay at Staging AU & NZ,https://teamwork.icubeonline.com/app/tasks/30120072,Done,2026-09-16,30 menit,,Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T03:22:33.477Z
+sheet-row-20-9to9-app-reward---setup-push-n,9to9,App Reward - Setup Push Notif,https://teamwork.icubeonline.com/app/tasks/30129473,Done,2026-09-16,,"1	Investigasi & Penyelesaian Kendala FCM Token
+• Tracing dan analisis error SERVICE_NOT_AVAILABLE pada pemanggilan getMessaging().getToken().
+• Setup dan aktivasi layanan Firebase Cloud Messaging (FCM) API pada project Firebase (to9-apps) di Google Cloud Console.	45 menit (0.75 jam)
+2	Setup & Konfigurasi Firebase Cloud Messaging Dashboard
+• Inisialisasi awal fitur Cloud Messaging di Firebase Console hingga dashboard siap digunakan (create first campaign).
+• Konfigurasi dan verifikasi file APNs Authentication Key (.p8) pada Apple app configuration (com.transmarco.9to9).	45 menit (0.75 jam)
+3	Testing & Penyusunan Spesifikasi Trigger Push Notification
+• Pengujian kirim pesan notifikasi via FCM HTTP v1 REST API ke target specific device FCM token.
+• Penyusunan spesifikasi format payload, parameter deeplink (product, category, custom, order), dan autentikasi token.	45 menit (0.75 jam)
+
+Total: ~2 Jam 15 Menit (2.25 jam)",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-18T02:17:29.461Z
+sheet-tw-30110254-21-grouping-shipping-deliver,Mitra10,Grouping Shipping deliveree,https://teamwork.icubeonline.com/app/tasks/30110254,Done,2026-09-16,,"Proyek       : PWA Mitra10
+Modul        : Checkout & Authentication (Shipping & Social Login)
+Tanggal      : 17 - 18 September 2026
+Role         : Frontend Developer
+=============================================================================
+[LOG DETAIL PEKERJAAN]
+
+1. [0.5 Jam] Investigasi & Analisis Struktur Data Kurir Deliveree di Checkout
+   - Melakukan mapping dan analisa response GraphQL `available_shipping_methods` yang memuat 20+ varian armada Deliveree.
+   - Mengidentifikasi isu UX pada layout checkout mobile yang terlalu panjang (*flat list*).
+   - Menemukan bug seleksi kurir pada `getSelectedShippingMethod` di mana metode armada dengan kata ""Pickup"" (contoh: *Deliveree Small Pickup*) terfilter salah sebagai *Store Pickup*.
+
+2. [2.0 Jam] Implementasi Logika Pengelompokan (Grouping) Deliveree Berdasarkan Kapasitas Muatan
+   - Membuat modul kategorisasi armada Deliveree ke dalam 3 sub-grup:
+     * Muatan Ringan (< 1.5 Ton) : Van Standard, Small Pickup, Small Box
+     * Truk Sedang / Engkel (2 - 8 Ton) : Engkel Box/Pickup, CDD Long, Double Engkel, Reefer
+     * Truk Berat & Proyek (> 8 Ton) : Fuso Box/Pickup, Tronton Wing Box, Trailer 20ft/40ft/Flatbed
+   - Menghitung agregasi harga termurah (*""Mulai dari Rp XX.XXX""*) dan jumlah armada per kategori secara dinamis.
+   - Mengintegrasikan state kontrol *auto-expanded* untuk accordion kategori yang armadanya sedang dipilih pengguna.
+   - Memperbaiki helper pengecekan kurir agar tetap akurat memisahkan reguler delivery, deliveree, dan pickup at store.
+
+3. [1.5 Jam] Perapihan UI / UX & Desain Komponen Visual Accordion
+   - Membuat custom component `DelivereePanel`, `DelivereeSummary`, dan `DelivereeDetails` untuk mengeliminasi double border dan issue box-shadow default MUI.
+   - Mengganti emoji statis dengan vector SVG icons yang scalable & elegan (Ikon Van, Truk Engkel, dan Truk Berat/Trailer) dengan background pill color-coded.
+   - Merapikan layout header Deliveree (memperbaiki logo container 38x38px flex-shrink agar tidak overlap/menabrak teks deskripsi).
+   - Menyesuaikan badge harga menjadi tampilan pill badge hijau yang rapi.
+
+4. [1.0 Jam] Konfigurasi & Re-enable Facebook Social Login
+   - Mengupdate App ID Facebook terbaru pada `swift.config.js` untuk environment (local, dev, stage, prod).
+   - Mengaktifkan kembali tombol dan handler Facebook Login pada `src/modules/commons/SocialLogin/index.js`.
+   - Merapikan error handling dan integrasi backdrop/toast notification saat flow social login berlangsung.
+
+5. [1.0 Jam] Testing & Validasi
+   - Cross-browser testing di viewport Mobile dan Desktop.
+   - Validasi interaksi seleksi radio button antar sub-grup Deliveree dan kurir internal/reguler.
+   - Verifikasi payload mutasi GraphQL `setShippingMethodsVendor` saat memilih varian armada Deliveree.
+   - Code syntax validation & linting check.
+
+TOTAL WAKTU PENGERJAAN: 6.0 Jam (0.75 Mandays)
+STATUS: DEV Complete",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-18T02:36:20.504Z
+sheet-row-22-lautan-luas-tidak-muncul-billing-addr,Lautan Luas,Tidak muncul Billing Address di Prod site,,Done,2026-09-16,,"Task: Production Backend Fallback & Error Handling for setCompanyAddress
+Date: 16 September 2026
+
+Details:
+- Handled GraphQL schema error when `setCompanyAddress` mutation is not available in production backend.
+- Added `errorPolicy: 'all'` and `onError` handlers to prevent unhandled Apollo errors from breaking checkout flow.
+- Implemented automatic fallback to default customer address flow if company address mutation fails.
+- Fixed loading state reset on error/empty response so the page doesn't get stuck on loader/skeleton.
+
+Time Spent: 1h 30m
+Status: Completed & Tested",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T03:22:12.538Z
+sheet-tw-30126537-23--cmlabs--adjust-selected-,Mitra10,[Cmlabs] Adjust selected toko dari param,https://teamwork.icubeonline.com/app/tasks/30126537,Done,2026-09-16,,"TIME LOG REPORT
+
+Task / Feature : Store Selection, URL Param Switcher & Blog Product Slider Improvement
+PR Link        : https://github.com/icube-id/pwa-mitra10/pull/1039
+Date           : 16 September 2026
+Developer      : Frontend Developer
+Total Time     : 4.5 Hours
+
+
+BREAKDOWN AKTIVITAS & DETAIL PEKERJAAN
+
+1. Investigation & Codebase Analysis (0.5 Hour)
+   - Melakukan audit pada alur pemilihan toko di ShoppingAt component, _app.js (SSR), dan cookies helper.
+   - Menganalisis mekanisme storeSwitcher GraphQL saat menerima koordinat vs koordinat kosong.
+   - Memeriksa implementasi widget Magento CatalogWidget/ProductSliderWidget pada halaman blog detail & CMS.
+
+2. Implementasi Store Selection & Geolocation Handling (1.0 Hour)
+   - Memastikan mekanisme default geolocation di browser:
+     * Jika izin lokasi di-allow: mengambil koordinat lat/long dan memilih toko terdekat dari backend.
+     * Jika izin lokasi ditolak / tidak aktif: fallback menggunakan koordinat kosong sehingga backend mengembalikan default toko QBIG BSD.
+   - Memperbarui sinkronisasi state selected store dengan cookie vendor_id dan vendor_code.
+   - File terkait: src/modules/commons/ShoppingAt/index.js
+
+3. Implementasi URL Query Parameter Store Switcher (1.0 Hour)
+   - Menambahkan handling query parameter URL ?store=... (misal: ?store=50008) baik pada SSR (_app.js) maupun client-side (ShoppingAt).
+   - Menambahkan field store_code pada query GraphQL options storeSwitcher di _app.js.
+   - Mengimplementasikan pencocokan otomatis berdasarkan store_code (vendor code) atau vendor_id dan mengupdate cookies aktif.
+   - File terkait:
+     * src/modules/theme/pages/_app.js
+     * src/modules/commons/ShoppingAt/index.js
+
+4. Perbaikan & Penyesuaian ProductSliderWidget pada Blog Page (1.0 Hour)
+   - Mengatasi issue React Hook rules (memindahkan pemanggilan getProduct ke top-level component).
+   - Menambahkan fallback otomatis: jika vendorId tidak ditemukan di cookie maupun props, widget otomatis melakukan query default store (QBIG) sehingga data harga/stok vendor tetap muncul.
+   - Menambahkan safe parsing JSON (try-catch) untuk parameter conditions_encoded.
+   - Meneruskan prop vendorId dari halaman blog detail ke ProductSliderWidget.
+   - File terkait:
+     * src/modules/blog/components/ProductSliderWidget/index.js
+     * src/modules/blog/components/Details/index.js
+
+5. Sanitasi Link & Path Produk (/product/) pada ProductCard (0.5 Hour)
+   - Memastikan link produk (pada gambar dan title) selalu mengarah ke path /product/<url_key>.
+   - Menambahkan sanitasi string url_key agar tidak terjadi duplikasi path (misal: /product/product/... atau double slash //).
+   - File terkait:
+     * src/modules/home/pages/default/components/ProductCard/components/Image.js
+     * src/modules/home/pages/default/components/ProductCard/components/Detail.js
+
+6. Code Review, Linting & Verification (0.5 Hour)
+   - Menjalankan ESLint pada seluruh file yang dimodifikasi dan memastikan 0 error / warning.
+   - Memverifikasi flow:
+     1) Geolocation allow -> toko terdekat; denied -> QBIG.
+     2) URL ?store=50008 -> toko 50008 terpilih.
+     3) Blog slider memiliki vendor data (fallback QBIG).
+     4) Link slider blog mengarah ke /product/ tanpa duplikasi.
+   - Commit dan update PR #1039.
+
+
+SUMMARY FILE CHANGES:
+- src/modules/commons/ShoppingAt/index.js
+- src/modules/theme/pages/_app.js
+- src/modules/blog/components/ProductSliderWidget/index.js
+- src/modules/blog/components/Details/index.js
+- src/modules/home/pages/default/components/ProductCard/components/Image.js
+- src/modules/home/pages/default/components/ProductCard/components/Detail.js",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T03:26:06.027Z
+sheet-row-24-mitra10-wizzy-feedback,Mitra10,Wizzy Feedback,https://teamwork.icubeonline.com/app/tasks/30128523,Done,2026-09-16,,"Feedback : https://docs.google.com/spreadsheets/d/1cKSnScp-AGHN-Hyf1GhuwJEZWRsvx7Do_kyQ13bGV70/edit?gid=0#gid=0
+
+Task: Wizzy AI Implementation - Bug Fixing & Post-Implementation Feedback
+Project: Mitra10 PWA
+
+1. Fixing Category Filter Redirection to ""No Results"" Page
+- Investigated issue where clicking category filter facet resulted in empty product listing.
+- Updated filter item value mapping in FilterDesktop and FilterDialog components to pass category slugs instead of display labels to Wizzy API.
+- Files: src/modules/catalog/plugin/ProductList/components/FilterDesktop/view.js, src/modules/catalog/plugin/ProductList/components/Filter/FilterDialog/index.js
+- Time: 1.5h
+
+2. Handling 1-2 Character & Short Search Queries for Wizzy API
+- Handled Wizzy `/products/search` endpoint constraint requiring a minimum of 3 characters.
+- Implemented smart query routing in service layer to redirect short search keywords (e.g., 'ac', 'tv', 'lg', '3m', 'wd') to `/products/filter`.
+- Files: src/services/wizzy/wizzy.service.js, src/components/WizzySearchBar/index.js
+- Time: 1.5h
+
+3. Autocomplete Dropdown Auto-Close on Search Execution & Navigation
+- Fixed race condition where pending autocomplete async requests resolved and re-opened the popup after navigation.
+- Added request cancellation tracking (searchReqIdRef), router event listener (routeChangeComplete), and blur handlers.
+- Files: src/modules/theme/components/header/desktop/components/Autocomplete/index.wizzy.js, src/modules/theme/components/header/desktop/core.js
+- Time: 1.5h
+
+4. Search Input Placeholder Behavior on Desktop & Mobile
+- Resolved overlapping placeholder/label issue in search input when user enters keyword.
+- Replaced Material-UI floating label with standard HTML5 placeholder prop across desktop and mobile search components.
+- Files: src/modules/theme/components/header/desktop/components/Autocomplete/index.wizzy.js, src/modules/commons/SearchModal/index.js, src/modules/theme/components/header/desktop/components/Autocomplete/index.graphql.js
+- Time: 1.0h
+
+5. Price Range Slider Dual-Thumb Initial Alignment Fix
+- Fixed price filter slider thumbs collapsing to 0 on initial facet load.
+- Added state synchronization in RangeSlider on async prop change and updated wizzyMapper aggregation parsing for min/max values.
+- Files: src/modules/commons/RangeSlider/index.js, src/modules/catalog/helpers/wizzyMapper.js, src/modules/catalog/plugin/ProductList/components/FilterDesktop/view.js, src/modules/catalog/plugin/ProductList/components/Filter/FilterDialog/index.js
+- Time: 1.5h
+
+6. Styling Desktop Sort-By Dropdown Menu
+- Adjusted UI styling for sort-by NativeSelect dropdown to apply proper left padding across select element and options.
+- Files: src/modules/catalog/plugin/ProductList/components/FilterDesktop/sort.js
+- Time: 0.5h
+
+7. Implementing Applied Filter Chips & Active Filter Indicators (Desktop & Mobile)
+- Created AppliedFilter component displaying active filter pill chips with individual remove buttons and ""Clear All"" functionality.
+- Integrated AppliedFilter into product listing container above product grid for responsive desktop/mobile view.
+- Added active filter counter badges on sidebar accordions and mobile filter button/drawer.
+- Fixed filter state synchronization (`selectedFilter`, `priceRange`, `sort`) on route changes.
+- Added localization strings and fallback handling for filter labels.
+- Files: src/modules/catalog/plugin/ProductList/components/AppliedFilter/index.js, src/modules/catalog/plugin/ProductList/components/AppliedFilter/style.js, src/modules/catalog/plugin/ProductList/components/index.js, src/modules/catalog/plugin/ProductList/components/Filter/index.js, src/modules/catalog/plugin/ProductList/components/Filter/view.js, src/modules/catalog/plugin/ProductList/components/FilterDesktop/view.js, src/modules/catalog/plugin/ProductList/components/FilterDesktop/style.js, src/modules/catalog/plugin/ProductList/components/Filter/FilterDialog/index.js, public/static/locales/id/catalog.json, public/static/locales/en/catalog.json
+- Time: 2.5h
+
+Total Time: 10.0h",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T03:22:24.798Z
+sheet-row-25-mitra10-lampirkan-recording-di-sh,Mitra10,lampirkan recording di sheet workbook,https://teamwork.icubeonline.com/app/tasks/30128524,Blocker,2026-09-16,,"Blocker : perlu pembayaran asli dan salah flow
+
+Form workbook
+https://gotocompany.sg.larksuite.com/wiki/QGWQw5N4ri2HQdkv2cllVl8LgVf?sheet=a6m944",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T07:06:06.103Z
+sheet-row-26-mitra10-mega-footer-broken-at-pro,Mitra10,Mega Footer broken at Prod site,https://teamwork.icubeonline.com/app/tasks/30128522,Done,2026-09-17,,"DEVELOPER TIME LOG & TASK REPORT
+
+Pull Request : https://github.com/icube-id/pwa-mitra10/pull/1040
+Branch       : 30128522.bugfix_megafooter
+Task         : Bugfix & Refactor Mega Footer Rendering Issue on Catalog Page & Console Warnings Fix
+Tanggal      : 17 September 2026
+Total Waktu  : 4.0 Jam (4h 00m)
+
+--------------------------------------------------------------------------------
+RINCIAN AKTIVITAS & BREAKDOWN WAKTU:
+--------------------------------------------------------------------------------
+
+1. [0.75h] Investigasi & Root Cause Analysis
+   - Reproduksi isu Mega Footer yang gagal ter-render sempurna / layout pecah pada Catalog/Category Page saat page refresh (hard reload).
+   - Analisis lifecycle SSR hydration dan rekonsiliasi Virtual DOM React terhadap manipulasi DOM imperatif (`document.createElement`, `insertBefore`, `appendChild`, `addEventListener`) di dalam useEffect.
+   - Tracing console warnings terkait Material-UI `Badge` overlap prop type dan `CustomTypography` size prop type mismatch.
+
+2. [1.75h] Refactor Komponen Mega Footer (React-based Parsing & Styling)
+   - Migrasi render MegaFooter dari `dangerouslySetInnerHTML` + manual DOM mutation ke `html-react-parser` (`parse` & `domToReact`) agar kompatibel dengan Virtual DOM React.
+   - Pembuatan subkomponen `MegaFooterGridItem` dengan declarative state management (`useState`) untuk interaksi toggle collapsible list (""View More +"" / ""View Less -"").
+   - Perbaikan logic pengambilan identifier CMS blocks (`pwa_footer_mega_grid_header_id` & `pwa_footer_mega_grid`) menggunakan metode `.find()` yang tahan terhadap variasi urutan response GraphQL.
+   - Migrasi styling ke Next.js native styled-jsx (`<style jsx global>`) untuk menjamin stylesheet ter-inject secara konsisten pada SSR dan client, serta menghindari CSS class name collision / styling loss pada JSS Material-UI.
+
+3. [0.5h] Bug Fixing & Console Warning Resolutions
+   - Perbaikan prop invalid `overlap=""rectangular""` menjadi `overlap=""rectangle""` pada Material-UI `Badge` di komponen ShoppingBag (`WithoutLink.js`) dan Wishlist (`index.js`).
+   - Penyesuaian `propTypes` pada `CustomTypography` (`Typography/index.js`) agar mendukung tipe data `string` maupun `number` pada prop `size`.
+
+4. [1.0h] Testing, SEO Verification, & Code Quality Check
+   - Verifikasi SEO: Memastikan semua tag semantic (`<h2>`, `<h4>`, `<ul>`, `<li>`, dan tag `<a>` beserta atribut `href`) ter-render penuh pada HTML SSR tanpa disembunyikan via `display: none` agar tetap terbaca oleh Googlebot / search crawler.
+   - Pengujian fungsionalitas dan reaktifitas UI pada Homepage dan Catalog Page untuk skenario client-side navigation (SPA) dan hard refresh.
+   - Menjalankan ESLint fix dan validasi build code quality.
+
+--------------------------------------------------------------------------------
+FILES MODIFIED:
+--------------------------------------------------------------------------------
+- src/modules/home/pages/default/components/MegaFooter.js
+- src/modules/commons/Typography/index.js
+- src/modules/cart/plugins/ShoppingBag/components/WithoutLink.js
+- src/modules/customer/plugins/Wishlist/components/index.js
+================================================================================
+```",Mathius Geraldi,[],2026-09-17T00:18:33.733Z,2026-09-17T07:36:43.969Z
+sheet-tw-30110254-14-packing-kayu-di-takeout,Mitra10,APP - Packing kayu di takeout,https://teamwork.icubeonline.com/app/tasks/30110254,Done,2026-09-15,,"TASK: [CHECKOUT] Remove Packing Kayu Option & Implement Shipping Information Redesign with CMS Modal
+
+Date: 16 September 2026
+Duration: 2h 00m
+
+Activity Details:
+
+09:25 - 09:55 (30m)
+- Refactor CheckoutScreen: remove ItemPacking component & imports.
+- Update useCheckout hook to auto-trigger setIsPackingKayu mutation (set default value to false on cart initialization).
+- Clean up unused states & ensure checkout validation remains stable.
+
+09:55 - 10:35 (40m)
+- Redesign ShippingAlert component based on design mockup.
+- Implement delivery services list (Instant, Regular RPX/SiCepat/IDExpress, Internal Courier & Deliveree cards).
+- Apply styling tokens, badge numbers, carrier tags, and responsive layout.
+
+10:35 - 11:10 (35m)
+- Integrate GraphQL query GET_CMS_PAGE with identifier 'shipping-policies'.
+- Implement bottom sheet modal popup for ""Ketentuan Pengiriman"" to prevent breaking checkout flow.
+- Add loading indicator, error handling state, and retry action.
+
+11:10 - 11:25 (15m)
+- Implement RenderHtml (react-native-render-html) inside ScrollView with custom tagsStyles for typography, tables, and lists.
+- Fix bundling resolution issue and conduct end-to-end testing on checkout screen.",Mathius Geraldi,[],2026-09-15T05:44:15.138Z,2026-09-17T07:08:26.210Z
+task-1789611079445-9hvf6,9to9,Testing Push Notif,https://teamwork.icubeonline.com/app/tasks/30129473,Done,2026-09-17,,"- TEST dari BE ke App
+- build apk for testing
+- testing on ios",Mathius Geraldi,[],2026-09-17T02:11:19.445Z,2026-09-18T02:17:15.963Z
+task-1789630917965-n0vu4,Mitra10,CALL : WebEngage <> iCube - Mitra10 Usecase Implementaiton,,Done,2026-09-17,10:30 - 12:00,,Mathius Geraldi,[],2026-09-17T07:41:57.965Z,2026-09-17T07:41:57.965Z
+task-1789638742372-wc4ps,Mitra10,Ubah Logo Google,,Ongoing,2026-09-17,,,Mathius Geraldi,[],2026-09-17T09:52:22.372Z,2026-09-18T02:10:01.159Z
+task-1789697370641-fqnko,Mitra10,UAT Test case gopay mini apps,https://teamwork.icubeonline.com/app/tasks/30128524,On Progress,2026-09-18,,"PROJECT TIME LOG & ACTIVITY REPORT
+Project     : Mitra10 - GoPay Mini-app (Swift PWA)
+Module      : Checkout, Order Detail & Success Page Flow
+Date        : Jumat, 18 September 2026
+Developer   : Frontend / Fullstack Developer
+Total Hours : 7.5 Hours (08:30 - 17:00, Break 12:00 - 13:00)
+================================================================================
+
+[08:30 - 09:30] Task 1: Terms & Conditions Popup Modal Integration
+- Investigasi modul CMS di `pwa-mitra10/src/modules/cms` untuk referensi query `cmsPage`.
+- Menambahkan GraphQL Query `getCmsPage(identifier: ""terms-conditions"")` pada schema dan service GraphQL checkout.
+- Membuat komponen popup modal `TncModal.js` menggunakan `html-react-parser` untuk render HTML asli CMS tanpa header dan footer website.
+- Menghubungkan trigger klik ""Terms & Conditions*"" pada halaman checkout ke modal popup.
+Time Spent: 1.0 Hour
+
+[09:30 - 11:00] Task 2: ""Save My Information"" Persistence & Address Auto-Sync
+- Mengembangkan state persistence untuk fitur ""Save my information for a faster checkout"" ke `localStorage` (`checkout_saved_user_info`).
+- Menyesuaikan `AddressModal.js` dengan `initialData` dan `enableReinitialize: true` agar form otomatis terisi data tersimpan saat dibuka.
+- Menambahkan logika auto-sync: ketika customer kembali dari homepage ke checkout, data alamat tersimpan otomatis dikirim ke backend via `setShippingAddressesOnCart` sehingga opsi Metode Pengiriman (Shipping Method) langsung muncul tanpa perlu simpan ulang manual.
+Time Spent: 1.5 Hours
+
+[11:00 - 12:00] Task 3: Disable Wooden Packing (Packing Kayu) & Validation
+- Memverifikasi konfigurasi dan flow packing kayu pada quote/cart GraphQL backend.
+- Memastikan flow checkout secara default tidak mengaktifkan packing kayu (`is_packing_kayu = false`).
+- Membersihkan redundansi pemanggilan mutation packing kayu yang tidak didukung endpoint backend.
+Time Spent: 1.0 Hour
+
+[12:00 - 13:00] LUNCH BREAK
+
+[13:00 - 14:30] Task 4: Payment Cancellation Flow & Order Detail Retry Page
+- Menambahkan mekanisme snapshot data transaksi (`mitra10_order_[orderId]`) saat `placeOrder` berhasil.
+- Menangani callback error/cancel pembayaran dari GoPay App (`launchPayment`) maupun web fallback untuk me-redirect ke halaman detail pesanan: `/checkout/order?order_id=...`.
+- Membuat halaman dan komponen Order Detail (`pages/checkout/order.js`, `src/modules/checkout/pages/order`):
+  * Status badge ""Menunggu Pembayaran"".
+  * Rincian nomor pesanan, daftar produk, alamat pengiriman, dan ringkasan biaya.
+  * Tombol ""Bayar Sekarang"" untuk memicu kembali deeplink GoPay pada order yang sama tanpa membuat duplicate order.
+  * Tombol ""Kembali ke Beranda"" dengan reset cart session untuk memulai order baru dari awal jika navigasi keluar.
+Time Spent: 1.5 Hours
+
+[14:30 - 15:45] Task 5: Success Page Overhaul & Save to PDF Feature
+- Memperbarui halaman `/checkout/success` (`src/modules/checkout/pages/success`):
+  * Menampilkan Order Number terstruktur dengan tombol Copy to Clipboard.
+  * Menampilkan informasi lengkap penerima, alamat pengiriman, dan rincian produk.
+  * Menampilkan rincian pembayaran (Subtotal, Biaya Kirim, Grand Total).
+- Mengimplementasikan fitur ""Simpan / Cetak PDF"" menggunakan styling `@media print` untuk menghasilkan layout faktur/invoice yang bersih tanpa tombol dan elemen UI webview.
+Time Spent: 1.25 Hours
+
+[15:45 - 17:00] Task 6: Bug Fixing, Code Quality & ESLint Compliance
+- Debugging & fixing error GraphQL `Cannot query field ""updatePackingKayu"" on type ""Mutation""`.
+- Memperbaiki issue accessibility ESLint (`jsx-a11y/label-has-associated-control`, `jsx-a11y/click-events-have-key-events`, `role=""button""`, `tabIndex`, `onKeyDown`).
+- Merapikan line length (`max-len`) dan formatting pada semua komponen baru (`AddressModal.js`, `IcubeMapsAutocomplete.js`, `TncModal.js`, `index.js`, `core.js`, `order`, `success`).
+- Menjalankan verifikasi linting `./node_modules/.bin/eslint src/modules/checkout pages/checkout` hingga bersih (0 errors, 0 warnings).
+Time Spent: 1.25 Hours
+
+================================================================================
+SUMMARY:
+- Total Tasks Completed : 6 Tasks
+- Total Time Logged     : 7.5 Hours
+- Status                : Completed & Verified Clean",Mathius Geraldi,[],2026-09-18T02:09:30.641Z,2026-09-18T02:09:43.804Z
+task-1789697601857-858q1,Kredivo,Styling PWA Config Shipping Phase 2 - apply graphql,https://teamwork.icubeonline.com/app/tasks/30070094,On Progress,2026-09-18,,,Mathius Geraldi,[],2026-09-18T02:13:21.858Z,2026-09-18T02:13:21.858Z
+task-1789697997067-hl4vi,Erha,Disable button fixed bundle & dynamic price on OMS,https://teamwork.icubeonline.com/app/tasks/30129474,Ongoing,2026-09-18,,,Mathius Geraldi,[],2026-09-18T02:19:57.067Z,2026-09-18T02:19:57.067Z
+task-1789698105987-v28uh,Erha,Issue banner homepage tidak center,https://teamwork.icubeonline.com/app/tasks/30129475,Ongoing,2026-09-18,,,Mathius Geraldi,"[""https://res.cloudinary.com/x3snqiks/image/upload/v1789698138/miniapp-scv/attachments/1789698138030_WhatsApp_Image_2026-09-17_at_09_38_53.jpg""]",2026-09-18T02:21:45.987Z,2026-09-18T02:22:22.593Z
+task-1789699378061-tqq1k,Mitra10,Grouping Shipping deliveree - feedback need all grouping,https://teamwork.icubeonline.com/app/tasks/30110254,Done,2026-09-18,,"TIME LOG / TIMESHEET REPORT - FEEDBACK ITERATION
+================================================================================
+Proyek       : PWA Mitra10
+Modul        : Checkout (Shipping Grouping UI & Universal Carrier Refactor)
+Tanggal      : 18 September 2026
+Role         : Frontend Developer
+================================================================================
+
+[LOG DETAIL PEKERJAAN FEEDBACK]
+
+1. [1.5 Jam] Feedback 1: Perapihan UI Deliveree & Implementasi Ikon SVG
+   - Mengganti seluruh emoji statis dengan handcrafted vector SVG icons (Light Vehicle, Medium Truck, Heavy Freight Truck) yang scalable dan elegan.
+   - Merancang container ikon dengan color-coded pill background (Soft Blue, Soft Green, Soft Amber).
+   - Memperbaiki layout header Deliveree: menambahkan `delivereeLogoWrapper` (38x38px flex-shrink) untuk mengatasi issue logo overlapping dengan teks deskripsi.
+   - Mengeliminasi issue double-border dan box-shadow bawaan Material-UI dengan membuat custom components (`DelivereePanel`, `DelivereeSummary`, `DelivereeDetails`).
+   - Mendesain ulang badge harga menjadi format pill badge hijau modern (*""Mulai IDR XX.XXX""*).
+
+2. [2.0 Jam] Feedback 2: Refactoring Grouping Menyeluruh untuk Semua Metode Pengiriman
+   - Mengembangkan sistem klasifikasi universal `groupAllShippingMethods` untuk memetakan seluruh kurir yang tersedia:
+     * Mitra10 Logistic (Kurir Toko Internal)
+     * Pengiriman Instan & Same Day (GrabExpress / GoSend)
+     * Deliveree (Sub-kategori Muatan: Ringan, Sedang, Berat)
+     * Kurir Reguler & Kargo Ekspedisi (JNE, RPX, SiCepat, dll)
+   - Membuat ikon SVG khusus untuk Mitra10 Logistic (Store Truck), Instant Delivery (Flash Lightning), dan Cargo/Regular (Parcel Box).
+   - Menstandardisasi komponen Accordion Card (`ShippingPanel`, `ShippingSummary`, `ShippingDetails`) agar seluruh metode pengiriman memiliki visual yang seragam dan konsisten.
+   - Mengimplementasikan logika auto-expansion cerdas berdasarkan status kurir yang aktif (`isActive`) atau fallback ke grup pertama.
+
+3. [0.5 Jam] Pembersihan Kode & Validasi
+   - Membersihkan legacy code dan duplikasi fungsi render pada `view.js` dan `style.js`.
+   - Melakukan pengecekan syntax dan linting menggunakan Node.js CLI.
+   - Uji coba interaktivitas pemilihan kurir di viewport mobile dan desktop.
+
+================================================================================
+TOTAL WAKTU PENGERJAAN FEEDBACK: 4.0 Jam (0.5 Mandays)
+================================================================================
+PR https://github.com/icube-id/pwa-mitra10/pull/1041
+STATUS: DEV COMPLETED",Mathius Geraldi,[],2026-09-18T02:42:58.061Z,2026-09-18T02:55:54.166Z
